@@ -2,9 +2,10 @@
  * X - A dvorak based, vim inspired keymap for ergodox keyboards
  * http://www.keyboard-layout-editor.com/#/gists/67569b26aa9c30d3e6fde64dd48e9696
  */
-#include "ergodox.h"
+#include QMK_KEYBOARD_H
 #include "debug.h"
 #include "action_layer.h"
+#include "version.h"
 
 enum Layer
 {
@@ -24,7 +25,7 @@ enum Macro
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = 
 {
-[Base] = KEYMAP
+[Base] = LAYOUT_ergodox
 (
 	// left hand
 	LOCKSCR,			KC_1,           KC_2,   		KC_3,   	KC_4,   			KC_5,  		MEH(KC_F11),
@@ -49,7 +50,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] =
 	KC_F16,		RALT(KC_SPC),	KC_BSPC
 ),
 
-[Raise] = KEYMAP
+[Raise] = LAYOUT_ergodox
 (
 	// left hand
 	SHUTDOWN,		KC_F1,		KC_F2,		KC_F3,		KC_F4,		KC_F5,		MEH(KC_F13),
@@ -74,7 +75,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] =
 	KC_TRNS,	KC_TRNS,	KC_TRNS
 ),
 
-[Lower] = KEYMAP
+[Lower] = LAYOUT_ergodox
 (
    	// left hand
 	RESET,		KC_TRNS,	KC_TRNS,	KC_TRNS,	KC_TRNS,	KC_TRNS,	KC_TRNS,
