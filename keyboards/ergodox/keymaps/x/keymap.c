@@ -10,8 +10,9 @@
 enum Layer
 {
 	Base = 0,
-	Raise,
-	Lower
+	SymbolsL,
+	SymbolsR,
+	Numpad
 };
 
 enum Macro
@@ -32,7 +33,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] =
 	M(CtrlTilde),		KC_QUOT,        KC_COMM,		KC_DOT, 	KC_P,   			KC_Y,   	KC_F17,
 	LGUI_T(KC_ESC),		KC_A,           KC_O,			KC_E,   	KC_U,   			KC_I,
 	KC_LSFT,        	KC_COLN,        KC_Q,    		KC_J,   	KC_K,   			KC_X,   	LGUI(KC_GRV),
-	KC_LALT,			KC_HYPR,		KC_SUPR,		KC_LEAD, 	LT(Lower, KC_TAB),
+	KC_LALT,			KC_HYPR,		KC_SUPR,		TT(Numpad),	LT(SymbolsR, KC_TAB),
 
 				KC_LEFT,		KC_RGHT,
 								KC_F11,
@@ -43,18 +44,18 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] =
 	KC_F18,			KC_F,	 	KC_G,   				KC_C,   	KC_R,   	KC_L,		RCTL_T(KC_SLSH),
 					KC_D,   	KC_H,   				KC_T,  		KC_N,   	KC_S,		RGUI_T(KC_MINS),
 	RGUI(KC_TAB),	KC_B,   	KC_M,   				KC_W,   	KC_V,   	KC_Z,		KC_RSFT,
-								LT(Raise, KC_ENT),		KC_LEAD,	KC_SUPR,  	KC_HYPR,	KC_RALT,
+								LT(SymbolsL, KC_ENT),	KC_LEAD,	KC_SUPR,  	KC_HYPR,	KC_RALT,
 
 	KC_MPLY,	KC_MNXT,
 	KC_F12,
 	KC_F16,		RALT(KC_SPC),	KC_BSPC
 ),
 
-[Raise] = LAYOUT_ergodox
+[SymbolsL] = LAYOUT_ergodox
 (
 	// left hand
 	SHUTDOWN,		KC_F1,		KC_F2,		KC_F3,		KC_F4,		KC_F5,		MEH(KC_F13),
-	LCTL_T(KC_GRV),			KC_EXLM,	KC_AT,		KC_HASH,	KC_DLR,		KC_PERC,	HYPR(KC_F17),
+	LCTL_T(KC_GRV),	KC_EXLM,	KC_AT,		KC_HASH,	KC_DLR,		KC_PERC,	HYPR(KC_F17),
 	KC_TRNS,		KC_EQL,		KC_LBRC,	KC_LPRN,	KC_LCBR,	KC_PLUS,
 	KC_TRNS,		KC_SCLN,	KC_RBRC,	KC_RPRN,	KC_RCBR,	KC_BSLS,	KC_TRNS,
 	KC_TRNS,		KC_TRNS,	KC_TRNS,	KC_TRNS,	KC_TRNS,
@@ -75,7 +76,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] =
 	KC_TRNS,	KC_TRNS,	KC_TRNS
 ),
 
-[Lower] = LAYOUT_ergodox
+[SymbolsR] = LAYOUT_ergodox
 (
    	// left hand
 	RESET,		KC_TRNS,	KC_TRNS,	KC_TRNS,	KC_TRNS,	KC_TRNS,	KC_TRNS,
@@ -99,6 +100,32 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] =
 	HYPR(KC_F12),
 	HYPR(KC_F16),	LCAG(KC_SPC),	KC_DEL
 ),
+
+[Numpad] = LAYOUT_ergodox
+(
+   	// left hand
+	KC_TRNS,	KC_TRNS,	KC_TRNS,	KC_TRNS,	KC_TRNS,	KC_TRNS,	KC_TRNS,
+	KC_TRNS,	KC_TRNS,	KC_TRNS,	KC_TRNS,	KC_TRNS,	KC_TRNS,	KC_TRNS,
+	KC_TRNS,	KC_TRNS,	KC_TRNS,	KC_TRNS,	KC_TRNS,	KC_TRNS,
+	KC_TRNS,	KC_TRNS,	KC_TRNS,	KC_TRNS,	KC_TRNS,	KC_TRNS,	KC_TRNS,
+	KC_TRNS,	KC_TRNS,	KC_TRNS,	KC_TRNS,	KC_TRNS,
+
+				KC_TRNS,	KC_TRNS,
+							KC_TRNS,
+	KC_TRNS,	KC_TRNS,	KC_TRNS,
+
+	// right hand
+	KC_TRNS,	KC_TRNS,	KC_TRNS,	KC_SLSH,	KC_ASTR,	KC_MINS,	KC_TRNS,
+	KC_TRNS,	KC_TRNS,	KC_7,		KC_8,		KC_9,		KC_PLUS,	KC_TRNS,
+				KC_TRNS,  	KC_4,   	KC_5,   	KC_6,   	KC_PLUS,   	KC_TRNS,
+	KC_TRNS,	KC_TRNS,	KC_1,		KC_2,		KC_3,		KC_ENT,		KC_TRNS,
+							KC_0,		KC_0,		KC_DOT,		KC_ENT,		KC_TRNS,
+
+	KC_TRNS,	KC_TRNS,
+	KC_TRNS,
+	KC_TRNS,	KC_TRNS,	KC_0
+)
+
 };
 
 // Runs just one time when the keyboard initializes.
@@ -160,10 +187,10 @@ void matrix_scan_user(void)
 	
     switch (layer)
    	{
-        case Raise:
+        case SymbolsL:
             ergodox_right_led_1_on();
             break;
-        case Lower:
+        case SymbolsR:
             ergodox_right_led_2_on();
             break;
         default:
