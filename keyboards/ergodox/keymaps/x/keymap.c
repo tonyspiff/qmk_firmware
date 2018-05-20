@@ -173,29 +173,38 @@ void leader_start(void)
 
 void leader_end(void)
 { 
-    ergodox_right_led_3_off();
+	ergodox_right_led_3_off();
 }
 
 // Runs constantly in the background, in a loop.
 void matrix_scan_user(void) 
 {
-    uint8_t layer = biton32(layer_state);
+	ergodox_board_led_off();
 
-    ergodox_board_led_off();
-    ergodox_right_led_1_off();
-    ergodox_right_led_2_off();
-	
-    switch (layer)
-   	{
-        case SymbolsL:
-            ergodox_right_led_1_on();
-            break;
-        case SymbolsR:
-            ergodox_right_led_2_on();
-            break;
-        default:
-            break;
-    }
+	ergodox_right_led_1_off();
+	ergodox_right_led_2_off();
+	leading ? 1 : ergodox_right_led_3_off();
+
+	uint8_t layer = biton32(layer_state);
+
+	switch (layer)
+	{
+		case SymbolsL:
+			ergodox_right_led_1_on();
+			break;
+
+		case SymbolsR:
+			ergodox_right_led_2_on();
+			break;
+
+		case Numpad:
+			ergodox_right_led_2_on();
+			ergodox_right_led_3_on();
+			break;
+
+		default:
+			break;
+	}
 
 	// https://github.com/qmk/qmk_firmware/issues/370
 	// Custom leading trying to mimic some Vim and Vimperator commands.
