@@ -115,15 +115,15 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] =
 	KC_TRNS,	KC_TRNS,	KC_TRNS,
 
 	// right hand
-	KC_TRNS,	KC_TRNS,	KC_TRNS,	KC_SLSH,	KC_ASTR,	KC_MINS,	KC_TRNS,
-	KC_TRNS,	KC_TRNS,	KC_7,		KC_8,		KC_9,		KC_PLUS,	KC_TRNS,
-				KC_TRNS,  	KC_4,   	KC_5,   	KC_6,   	KC_PLUS,   	KC_TRNS,
-	KC_TRNS,	KC_TRNS,	KC_1,		KC_2,		KC_3,		KC_ENT,		KC_TRNS,
-							KC_0,		KC_0,		KC_DOT,		KC_ENT,		KC_TRNS,
+	KC_TRNS,	KC_TRNS,	KC_TRNS,	KC_TRNS,	KC_TRNS,	KC_TRNS,	KC_TRNS,
+	KC_TRNS,	KC_EQL,		KC_7,		KC_8,		KC_9,		KC_MINS,	KC_SLSH,
+				KC_DOT,  	KC_4,   	KC_5,   	KC_6,   	KC_PLUS,   	KC_ASTR,
+	KC_TRNS,	KC_COMM,	KC_1,		KC_2,		KC_3,		KC_ENT,		KC_TRNS,
+							KC_0,		KC_0,		KC_TRNS,	KC_TRNS,	KC_TRNS,
 
 	KC_TRNS,	KC_TRNS,
 	KC_TRNS,
-	KC_TRNS,	KC_TRNS,	KC_0
+	KC_TRNS,	KC_TRNS,	KC_TRNS
 )
 
 };
@@ -168,11 +168,15 @@ LEADER_EXTERNS();
 
 void leader_start(void) 
 {
+	ergodox_right_led_1_on();
+	ergodox_right_led_2_on();
 	ergodox_right_led_3_on();
 }
 
 void leader_end(void)
 { 
+	ergodox_right_led_1_off();
+	ergodox_right_led_2_off();
 	ergodox_right_led_3_off();
 }
 
@@ -181,9 +185,12 @@ void matrix_scan_user(void)
 {
 	ergodox_board_led_off();
 
-	ergodox_right_led_1_off();
-	ergodox_right_led_2_off();
-	leading ? 1 : ergodox_right_led_3_off();
+	if (!leading)
+	{
+		ergodox_right_led_1_off();
+		ergodox_right_led_2_off();
+		ergodox_right_led_3_off();
+	}
 
 	uint8_t layer = biton32(layer_state);
 
@@ -198,7 +205,6 @@ void matrix_scan_user(void)
 			break;
 
 		case Numpad:
-			ergodox_right_led_2_on();
 			ergodox_right_led_3_on();
 			break;
 
