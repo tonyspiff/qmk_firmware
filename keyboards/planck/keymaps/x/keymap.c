@@ -2,14 +2,16 @@
  * Planck X - A dvorak based, vim inspired keymap for Planck keyboards
  * http://www.keyboard-layout-editor.com/#/gists/6b62cc3de20991eb879aabb32cf75b8f
  */
-#include "planck.h"
+#include QMK_KEYBOARD_H
 #include "action_layer.h"
 
 enum Layer
 {
 	Base = 0,
-	Raise,
-	Lower
+	SymbolsL,
+	SymbolsR,
+	Numpad,
+	Macros
 };
 
 enum Macro
@@ -18,50 +20,51 @@ enum Macro
 };
 
 #define KC_SUPR (QK_LCTL | QK_LALT | QK_LGUI)
-
-/* Dvorak
- * ,-----------------------------------------------------------------------------------.
- * | Tab  |   "  |   ,  |   .  |   P  |   Y  |   F  |   G  |   C  |   R  |   L  | Bksp |
- * |------+------+------+------+------+-------------+------+------+------+------+------|
- * | Esc  |   A  |   O  |   E  |   U  |   I  |   D  |   H  |   T  |   N  |   S  |  /   |
- * |------+------+------+------+------+------|------+------+------+------+------+------|
- * | Shift|   ;  |   Q  |   J  |   K  |   X  |   B  |   M  |   W  |   V  |   Z  |Enter |
- * |------+------+------+------+------+------+------+------+------+------+------+------|
- * | Brite| Ctrl | Alt  | GUI  |Lower |    Space    |Raise | Left | Down |  Up  |Right |
- * `-----------------------------------------------------------------------------------'
- */
-/* [_DVORAK] = { */
-/*   {KC_TAB,  KC_QUOT, KC_COMM, KC_DOT,  KC_P,    KC_Y,    KC_F,    KC_G,    KC_C,    KC_R,    KC_L,    KC_BSPC}, */
-/*   {KC_ESC,  KC_A,    KC_O,    KC_E,    KC_U,    KC_I,    KC_D,    KC_H,    KC_T,    KC_N,    KC_S,    KC_SLSH}, */
-/*   {KC_LSFT, KC_SCLN, KC_Q,    KC_J,    KC_K,    KC_X,    KC_B,    KC_M,    KC_W,    KC_V,    KC_Z,    KC_ENT }, */
-/*   {BACKLIT, KC_LCTL, KC_LALT, KC_LGUI, LOWER,   KC_SPC,  KC_SPC,  RAISE,   KC_LEFT, KC_DOWN, KC_UP,   KC_RGHT} */
-/* }, */
+#define NUM_SPC LT(Numpad, KC_SPC)
+#define SYM_TAB LT(SymbolsR, KC_TAB)
+#define SYM_ENT LT(SymbolsL, KC_ENT)
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = 
 {
-[Base] = 
-{
-	{M(CtrlTilde),		KC_QUOT,        KC_COMM,		KC_DOT, 	KC_P,   			KC_Y,  	KC_F,		KC_G,   			KC_C,   	KC_R,   	KC_L,		RCTL_T(KC_SLSH)},
-	{LGUI_T(KC_ESC),	KC_A,           KC_O,			KC_E,   	KC_U,   			KC_I,  	KC_D,   	KC_H,  			 	KC_T,  		KC_N,   	KC_S,		RGUI_T(KC_MINS)},
-	{KC_LSFT,       	KC_COLN,        KC_Q,    		KC_J,   	KC_K,   			KC_X,  	KC_B,   	KC_M,  			 	KC_W,   	KC_V,   	KC_Z,		KC_RSFT},
-	{KC_LALT,			KC_HYPR,		KC_SUPR,		KC_LEAD, 	LT(Lower, KC_TAB), 	KC_SPC,	KC_BSPC,	LT(Raise, KC_ENT),	KC_LEAD,	KC_SUPR,  	KC_HYPR,	KC_RALT}
-},
-
-[Raise] = KEYMAP
+[Base] = LAYOUT_planck_grid
 (
-	LCTL_T(KC_GRV),	KC_EXLM,	KC_AT,		KC_HASH,	KC_DLR,		KC_PERC,             	KC_F6,		KC_F7,		KC_F8,		KC_F9,		KC_F10,		KC_TRNS,
-	KC_TRNS,		KC_EQL,		KC_LBRC,	KC_LPRN,	KC_LCBR,	KC_PLUS,             	KC_6,  		KC_7,   	KC_8,   	KC_9,   	KC_0,   	KC_TRNS,
-	KC_TRNS,		KC_SCLN,	KC_RBRC,	KC_RPRN,	KC_RCBR,	KC_BSLS,             	KC_TRNS,	KC_TRNS,	KC_TRNS,	KC_TRNS,	KC_TRNS,	KC_TRNS,
-	KC_TRNS,		KC_TRNS,	KC_TRNS,	KC_TRNS,	KC_TRNS, 	LGUI(LCTL(KC_SPC)),  	KC_TRNS,	KC_TRNS,	KC_TRNS,	KC_TRNS,	KC_TRNS,    KC_TRNS
+M(CtrlTilde),	KC_QUOT,     KC_COMM,	KC_DOT, 	KC_P,		KC_Y, 	 	KC_F,		KC_G,   	KC_C,   	KC_R,   	KC_L,		RCTL_T(KC_SLSH),
+LGUI_T(KC_ESC),	KC_A,       KC_O,		KC_E,   	KC_U,  		KC_I, 	 	KC_D,   	KC_H,  	 	KC_T,  		KC_N,   	KC_S,		RGUI_T(KC_MINS),
+KC_LSFT,       	KC_COLN,    KC_Q,   	KC_J,   	KC_K,  		KC_X, 	 	KC_B,   	KC_M,  	 	KC_W,   	KC_V,   	KC_Z,		KC_RSFT,
+KC_LALT,		KC_HYPR,	KC_SUPR,	KC_LEAD, 	SYM_TAB,	NUM_SPC,	KC_BSPC,	SYM_ENT,	KC_LEAD,	KC_SUPR,  	KC_HYPR,	KC_RALT
 ),
 
-[Lower] = KEYMAP
+[SymbolsL] = LAYOUT_planck_grid
 (
-	KC_TRNS,	KC_F1,		KC_F2,		KC_F3,		KC_F4,		KC_F5,	 	KC_CIRC,		KC_AMPR,	KC_ASTR,	KC_LPRN,	KC_RPRN,	KC_TRNS,
-	KC_TRNS,	KC_1,		KC_2,		KC_3,		KC_4,		KC_5,    	KC_QUES,		KC_LEFT,	KC_DOWN,	KC_UP,		KC_RGHT,	KC_TRNS,
-	KC_TRNS,	KC_TRNS,	KC_TRNS,	KC_TRNS,	KC_TRNS,	KC_TRNS, 	KC_PIPE,		KC_HOME,	KC_PGDN,	KC_PGUP,	KC_END,		KC_TRNS,
-	KC_TRNS,	KC_TRNS,	KC_TRNS,	KC_TRNS,	KC_TRNS, 	KC_TRNS, 	LCAG(KC_SPC),	KC_DEL, 	KC_TRNS,	KC_TRNS,	KC_TRNS,	KC_TRNS
+LCTL_T(KC_GRV),	KC_EXLM,	KC_AT,		KC_HASH,	KC_DLR,				KC_PERC,       	KC_F6,		KC_F7,		KC_F8,		KC_F9,		KC_F10,		RESET,
+_______,		KC_EQL,		KC_LBRC,	KC_LPRN,	KC_LCBR,			KC_PLUS,       	KC_6,  		KC_7,   	KC_8,   	KC_9,   	KC_0,   	_______,
+_______,		KC_SCLN,	KC_RBRC,	KC_RPRN,	KC_RCBR,			KC_BSLS,       	_______,	_______,	_______,	_______,	_______,	_______,
+_______,		_______,	_______,	_______,	RGUI(RCTL(KC_SPC)),	RGUI(KC_SPC),	_______,	_______,	_______,	_______,    _______,	_______
 ),
+
+[SymbolsR] = LAYOUT_planck_grid
+(
+RESET,		KC_F1,		KC_F2,		KC_F3,		KC_F4,		KC_F5,	 	KC_CIRC,		KC_AMPR,	KC_ASTR,	KC_LPRN,	KC_RPRN,	_______,
+_______,	KC_1,		KC_2,		KC_3,		KC_4,		KC_5,    	KC_QUES,		KC_LEFT,	KC_DOWN,	KC_UP,		KC_RGHT,	_______,
+_______,	_______,	_______,	_______,	_______,	_______, 	KC_PIPE,		KC_HOME,	KC_PGDN,	KC_PGUP,	KC_END,		_______,
+_______,	_______,	_______,	_______,	_______, 	_______, 	KC_DEL,			_______,	_______,	_______,	_______,	_______
+),
+
+[Numpad] = LAYOUT_planck_grid
+(
+_______,	_______,	_______,	_______,	_______,	_______, 	KC_EQL,		KC_7,	KC_8,	KC_9,		KC_MINS,	KC_SLSH,
+_______,	_______,	_______,	_______,	_______,	_______,	KC_DOT,  	KC_4,  	KC_5,  	KC_6,   	KC_PLUS,   	KC_ASTR,
+_______,	_______,	_______,	_______,	_______,	_______, 	KC_COMM,	KC_1,	KC_2,	KC_3,		KC_ENT,		_______,
+_______,	_______,	_______,	_______,	_______, 	_______, 	KC_F13,		KC_0,	KC_0,	KC_CIRC,	KC_EXLM,	KC_X
+),
+
+[Macros] = LAYOUT_planck_grid
+(
+_______,	_______,	_______,	_______,	_______,	_______, 	KC_EQL,		KC_7,	KC_8,	KC_9,		KC_MINS,	KC_SLSH,
+_______,	_______,	_______,	_______,	_______,	_______,	KC_DOT,  	KC_4,  	KC_5,  	KC_6,   	KC_PLUS,   	KC_ASTR,
+_______,	_______,	_______,	_______,	_______,	_______, 	KC_COMM,	KC_1,	KC_2,	KC_3,		KC_ENT,		_______,
+_______,	_______,	_______,	_______,	_______, 	_______, 	KC_DEL,		KC_0,	KC_0,	KC_CIRC,	KC_EXLM,	KC_X
+)
 };
 
 // Runs just one time when the keyboard initializes.
@@ -123,10 +126,10 @@ void matrix_scan_user(void)
 	/*  */
     /* switch (layer) */
    	/* { */
-    /*     case Raise: */
+    /*     case SymbolsL: */
     /*         ergodox_right_led_1_on(); */
     /*         break; */
-    /*     case Lower: */
+    /*     case SymbolsR: */
     /*         ergodox_right_led_2_on(); */
     /*         break; */
     /*     default: */

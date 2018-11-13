@@ -12,7 +12,9 @@ enum Layer
 	Base = 0,
 	SymbolsL,
 	SymbolsR,
-	Numpad
+	Numpad,
+	Arrows,
+	Hotkeys
 };
 
 enum Macro
@@ -23,109 +25,161 @@ enum Macro
 #define KC_SUPR (QK_LCTL | QK_LALT | QK_LGUI)
 #define SHUTDOWN LCAG(KC_EJCT)
 #define LOCKSCR RCTL(RSFT(KC_PWR))
+#define SYM_TAB LT(SymbolsR, KC_TAB)
+#define SYM_ENT LT(SymbolsL, KC_ENT)
+#define NUM_F13 LT(Numpad, KC_F13)
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = 
 {
 [Base] = LAYOUT_ergodox
 (
 	// left hand
-	LOCKSCR,			KC_1,           KC_2,   		KC_3,   	KC_4,   			KC_5,  		MEH(KC_F11),
-	M(CtrlTilde),		KC_QUOT,        KC_COMM,		KC_DOT, 	KC_P,   			KC_Y,   	KC_F17,
-	LGUI_T(KC_ESC),		KC_A,           KC_O,			KC_E,   	KC_U,   			KC_I,
-	KC_LSFT,        	KC_COLN,        KC_Q,    		KC_J,   	KC_K,   			KC_X,   	LGUI(KC_GRV),
-	KC_LALT,			KC_HYPR,		KC_SUPR,		TT(Numpad),	LT(SymbolsR, KC_TAB),
+	LOCKSCR,		KC_1,       KC_2,   	KC_3,		KC_4,   	KC_5,   KC_F11,
+	M(CtrlTilde),	KC_QUOT,    KC_COMM,	KC_DOT,		KC_P,   	KC_Y,   LCAG(KC_F13),
+	LGUI_T(KC_ESC),	KC_A,       KC_O,		KC_E,		KC_U,   	KC_I,
+	KC_LSFT,        KC_COLN,    KC_Q,   	KC_J,		KC_K,   	KC_X,   HYPR(KC_F13),
+	KC_LALT,		KC_HYPR,    KC_SUPR,	TT(Arrows),	SYM_TAB,
 
-				KC_LEFT,		KC_RGHT,
-								KC_F13,
-	KC_SPC,		RGUI(KC_SPC),	KC_LEAD,
+				KC_LEFT,	KC_RGHT,
+							KC_F16,
+	KC_SPC,		NUM_F13,	MEH(KC_SPC),
 
 	// right hand
-	MEH(KC_F12),	KC_6,  		KC_7,   				KC_8,   	KC_9,   	KC_0,   	KC_CAPS,
-	KC_F18,			KC_F,	 	KC_G,   				KC_C,   	KC_R,   	KC_L,		RCTL_T(KC_SLSH),
-					KC_D,   	KC_H,   				KC_T,  		KC_N,   	KC_S,		RGUI_T(KC_MINS),
-	RGUI(KC_TAB),	KC_B,   	KC_M,   				KC_W,   	KC_V,   	KC_Z,		KC_RSFT,
-								LT(SymbolsL, KC_ENT),	KC_LEAD,	KC_SUPR,  	KC_HYPR,	KC_RALT,
+	KC_F12,			KC_6,  		KC_7, 		KC_8,   	KC_9,   	KC_0,   	KC_CAPS,
+	RGUI(KC_GRV),	KC_F,	 	KC_G, 		KC_C,   	KC_R,   	KC_L,		RCTL_T(KC_SLSH),
+					KC_D,   	KC_H, 		KC_T,  		KC_N,   	KC_S,		RGUI_T(KC_MINS),
+	RGUI(KC_TAB),	KC_B,   	KC_M, 		KC_W,   	KC_V,   	KC_Z,		KC_RSFT,
+								SYM_ENT,	KC_LEAD,	KC_SUPR,  	KC_HYPR,	KC_RALT,
 
-	KC_MPLY,	KC_MNXT,
+	KC_MPLY,		KC_MNXT,
 	KC_F16,
-	KC_LEAD,	RALT(KC_SPC),	KC_BSPC
+	RCTL(KC_F2),	OSL(Hotkeys),	KC_BSPC
 ),
 
 [SymbolsL] = LAYOUT_ergodox
 (
 	// left hand
-	SHUTDOWN,		KC_F1,		KC_F2,		KC_F3,		KC_F4,		KC_F5,		KC_F11,
-	LCTL_T(KC_GRV),	KC_EXLM,	KC_AT,		KC_HASH,	KC_DLR,		KC_PERC,	HYPR(KC_F17),
-	KC_TRNS,		KC_EQL,		KC_LBRC,	KC_LPRN,	KC_LCBR,	KC_PLUS,
-	KC_TRNS,		KC_SCLN,	KC_RBRC,	KC_RPRN,	KC_RCBR,	KC_BSLS,	KC_TRNS,
-	KC_TRNS,		KC_TRNS,	KC_TRNS,	KC_TRNS,	KC_TRNS,
+	SHUTDOWN,		KC_F1,		KC_F2,		KC_F3,		KC_F4,		KC_F5,		LGUI(KC_F11),
+	LCTL_T(KC_GRV),	KC_EXLM,	KC_AT,		KC_HASH,	KC_DLR,		KC_PERC,	_______,
+	_______,		KC_EQL,		KC_LBRC,	KC_LPRN,	KC_LCBR,	KC_PLUS,
+	_______,		KC_SCLN,	KC_RBRC,	KC_RPRN,	KC_RCBR,	KC_BSLS,	_______,
+	_______,		_______,	_______,	_______,	_______,
 
-								KC_TRNS,	KC_TRNS,
-											HYPR(KC_F13),
-	LGUI(LALT(KC_SPC)),	LGUI(LCTL(KC_SPC)),	KC_TRNS,
+						_______,		_______,
+										HYPR(KC_F17),
+	LGUI(LALT(KC_SPC)), LGUI(KC_F13),	_______,
 
 	// right hand
-	KC_TRNS,	KC_TRNS,	KC_TRNS,	KC_TRNS,	KC_TRNS,	KC_TRNS,	RESET,
-	KC_TRNS,	KC_F6,		KC_F7,		KC_F8,		KC_F9,		KC_F10,		KC_TRNS,
-				KC_6,  		KC_7,   	KC_8,   	KC_9,   	KC_0,   	KC_TRNS,
-	KC_TRNS,	KC_TRNS,	KC_TRNS,	KC_TRNS,	KC_TRNS,	KC_TRNS,	KC_TRNS,
-							KC_TRNS,	KC_TRNS,	KC_TRNS,	KC_TRNS,	KC_TRNS,
+	_______,	_______,	_______,	_______,	_______,	_______,	RESET,
+	_______,	KC_F6,		KC_F7,		KC_F8,		KC_F9,		KC_F10,		_______,
+				KC_6,  		KC_7,   	KC_8,   	KC_9,   	KC_0,   	_______,
+	_______,	_______,	_______,	_______,	_______,	_______,	_______,
+							_______,	_______,	_______,	_______,	_______,
 
 	KC_VOLD,	KC_VOLU,
-	KC_TRNS,
-	KC_TRNS,	KC_TRNS,	KC_TRNS
+	_______,
+	_______,	_______,	_______
 ),
 
 [SymbolsR] = LAYOUT_ergodox
 (
    	// left hand
-	RESET,		KC_TRNS,	KC_TRNS,	KC_TRNS,	KC_TRNS,	KC_TRNS,	KC_TRNS,
-	KC_TRNS,	KC_F1,		KC_F2,		KC_F3,		KC_F4,		KC_F5,		KC_TRNS,
-	KC_TRNS,	KC_1,		KC_2,		KC_3,		KC_4,		KC_5,
-	KC_TRNS,	KC_TRNS,	KC_TRNS,	KC_TRNS,	KC_TRNS,	KC_TRNS,	KC_TRNS,
-	KC_TRNS,	KC_TRNS,	KC_TRNS,	KC_TRNS,	KC_TRNS,
+	RESET,		_______,	_______,	_______,	_______,	_______,	_______,
+	_______,	KC_F1,		KC_F2,		KC_F3,		KC_F4,		KC_F5,		_______,
+	_______,	KC_1,		KC_2,		KC_3,		KC_4,		KC_5,
+	_______,	_______,	_______,	_______,	_______,	_______,	_______,
+	_______,	_______,	_______,	_______,	_______,
 
 				KC_F14,		KC_F15,
-							KC_TRNS,
-	KC_TRNS,	KC_TRNS,	KC_TRNS,
+							_______,
+	_______,	_______,	_______,
 
 	// right hand
-	KC_F12,			KC_F6,		KC_F7,		KC_F8,		KC_F9,		KC_F10,		KC_PWR,
-	HYPR(KC_F18),	KC_CIRC,	KC_AMPR,	KC_ASTR,	KC_LPRN,	KC_RPRN,	KC_TRNS,
-					KC_QUES,	KC_LEFT,	KC_DOWN,	KC_UP,		KC_RGHT,	KC_TRNS,
-	KC_TRNS,		KC_PIPE,	KC_HOME,	KC_PGDN,	KC_PGUP,	KC_END,		KC_TRNS,
-								KC_TRNS,	KC_TRNS,	KC_TRNS,	KC_TRNS,	KC_TRNS,
+	LGUI(KC_F12),	KC_F6,		KC_F7,		KC_F8,		KC_F9,		KC_F10,		KC_PWR,
+	HYPR(KC_F18),	KC_CIRC,	KC_AMPR,	KC_ASTR,	KC_LPRN,	KC_RPRN,	_______,
+					KC_QUES,	KC_LEFT,	KC_DOWN,	KC_UP,		KC_RGHT,	_______,
+	_______,		KC_PIPE,	KC_HOME,	KC_PGDN,	KC_PGUP,	KC_END,		_______,
+								_______,	_______,	_______,	_______,	_______,
 
 	KC_MUTE,		KC_MPRV,
 	HYPR(KC_F16),
-	KC_TRNS,		LCAG(KC_SPC),	KC_DEL
+	_______,		LGUI(KC_F),	KC_DEL
 ),
 
 [Numpad] = LAYOUT_ergodox
 (
    	// left hand
-	KC_TRNS,	KC_TRNS,	KC_TRNS,	KC_TRNS,	KC_TRNS,	KC_TRNS,	KC_TRNS,
-	KC_TRNS,	KC_TRNS,	KC_TRNS,	KC_TRNS,	KC_TRNS,	KC_TRNS,	KC_TRNS,
-	KC_TRNS,	KC_TRNS,	KC_TRNS,	KC_TRNS,	KC_TRNS,	KC_TRNS,
-	KC_TRNS,	KC_TRNS,	KC_TRNS,	KC_TRNS,	KC_TRNS,	KC_TRNS,	KC_TRNS,
-	KC_TRNS,	KC_TRNS,	KC_TRNS,	KC_TRNS,	KC_TRNS,
+	_______,	_______,	_______,	_______,	_______,	_______,	_______,
+	_______,	_______,	_______,	_______,	_______,	_______,	_______,
+	_______,	_______,	_______,	_______,	_______,	_______,
+	_______,	_______,	_______,	_______,	_______,	_______,	_______,
+	_______,	_______,	_______,	_______,	_______,
 
-				KC_TRNS,	KC_TRNS,
-							KC_TRNS,
-	KC_TRNS,	KC_TRNS,	KC_TRNS,
+				_______,	_______,
+							_______,
+	_______,	_______,	_______,
 
 	// right hand
-	KC_TRNS,	KC_TRNS,	KC_TRNS,	KC_TRNS,	KC_LPRN,	KC_RPRN,	KC_TRNS,
-	KC_TRNS,	KC_EQL,		KC_7,		KC_8,		KC_9,		KC_MINS,	KC_SLSH,
+	_______,	_______,	_______,	_______,	KC_LPRN,	KC_RPRN,	_______,
+	_______,	KC_EQL,		KC_7,		KC_8,		KC_9,		KC_MINS,	KC_SLSH,
 				KC_DOT,  	KC_4,   	KC_5,   	KC_6,   	KC_PLUS,   	KC_ASTR,
-	KC_TRNS,	KC_COMM,	KC_1,		KC_2,		KC_3,		KC_ENT,		KC_TRNS,
+	_______,	KC_COMM,	KC_1,		KC_2,		KC_3,		KC_ENT,		_______,
 							KC_0,		KC_0,		KC_CIRC,	KC_EXLM,	KC_X,
 
-	KC_TRNS,	KC_TRNS,
-	KC_TRNS,
-	KC_TRNS,	KC_TRNS,	KC_TRNS
-)
+	_______,	_______,
+	_______,
+	_______,	MEH(KC_SPC),	_______
+),
 
+[Arrows] = LAYOUT_ergodox
+(
+   	// left hand
+	_______,	_______,	_______,	_______,	_______,	_______,	_______,
+	_______,	_______,	_______,	_______,	_______,	_______,	_______,
+	_______,	_______,	_______,	_______,	_______,	_______,
+	_______,	_______,	_______,	_______,	_______,	_______,	_______,
+	_______,	_______,	_______,	_______,	_______,
+
+				_______,	_______,
+							_______,
+	_______,	_______,	_______,
+
+	// right hand
+	_______,	_______,	_______,		_______,		_______,		_______,		_______,
+	_______,	_______,	RCTL(KC_LEFT),	RCTL(KC_DOWN),	RCTL(KC_UP),	RCTL(KC_RGHT),	_______,
+				_______,	RGUI(KC_LEFT),	RGUI(KC_DOWN),	RGUI(KC_UP),	RGUI(KC_RGHT),	_______,
+	_______,	_______,	RSFT(KC_LEFT),	RSFT(KC_DOWN),	RSFT(KC_UP),	RSFT(KC_RGHT),	_______,
+							_______,		_______,		_______,		_______,		_______,
+
+	_______,	_______,
+	_______,
+	_______,	_______,	_______
+),
+
+[Hotkeys] = LAYOUT_ergodox
+(
+   	// left hand
+	_______,	_______,		_______,		_______,		_______,		_______,		_______,
+	_______,	LCAG(KC_F1),	LCAG(KC_F2),	LCAG(KC_F3),	LCAG(KC_F4),	LCAG(KC_F5),	_______,
+	_______,	MEH(KC_F1),		MEH(KC_F2),		MEH(KC_F3),		MEH(KC_F4),		MEH(KC_F5),
+	_______,	HYPR(KC_F1),	HYPR(KC_F2),	HYPR(KC_F3),	HYPR(KC_F4),	HYPR(KC_F5),	_______,
+	_______,	_______,		_______,		_______,		LCAG(KC_F11),
+
+					_______,		_______,
+									_______,
+	MEH(KC_F11),	HYPR(KC_F11),	_______,
+
+	// right hand
+	_______,	_______,		_______,		_______,		_______,		_______,		_______,
+	_______,	LCAG(KC_F6),	LCAG(KC_F7),	LCAG(KC_F8),	LCAG(KC_F9),	LCAG(KC_F10),	_______,
+				MEH(KC_F6),		MEH(KC_F7),		MEH(KC_F8),		MEH(KC_F9),		RGUI(KC_SPC),	_______,
+	_______,	HYPR(KC_F6),	HYPR(KC_F7),	HYPR(KC_F8),	HYPR(KC_F9),	HYPR(KC_F10),	_______,
+								LCAG(KC_F12),	_______,		_______,		_______,		_______,
+
+	_______,	_______,
+	_______,
+	_______,	_______,	HYPR(KC_F12)
+)
 };
 
 // Runs just one time when the keyboard initializes.
@@ -169,15 +223,11 @@ LEADER_EXTERNS();
 void leader_start(void) 
 {
 	ergodox_right_led_1_on();
-	ergodox_right_led_2_on();
-	ergodox_right_led_3_on();
 }
 
 void leader_end(void)
 { 
 	ergodox_right_led_1_off();
-	ergodox_right_led_2_off();
-	ergodox_right_led_3_off();
 }
 
 // Runs constantly in the background, in a loop.
@@ -197,7 +247,7 @@ void matrix_scan_user(void)
 	switch (layer)
 	{
 		case SymbolsL:
-			ergodox_right_led_1_on();
+			ergodox_right_led_2_on();
 			break;
 
 		case SymbolsR:
@@ -206,6 +256,14 @@ void matrix_scan_user(void)
 
 		case Numpad:
 			ergodox_right_led_3_on();
+			break;
+
+		case Arrows:
+			ergodox_right_led_1_on();
+			break;
+
+		case Hotkeys:
+			ergodox_right_led_1_on();
 			break;
 
 		default:
