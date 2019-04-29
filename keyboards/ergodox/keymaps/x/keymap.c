@@ -3,9 +3,6 @@
  * http://www.keyboard-layout-editor.com/#/gists/67569b26aa9c30d3e6fde64dd48e9696
  */
 #include QMK_KEYBOARD_H
-#include "quantum_keycodes.h"
-#include "action_layer.h"
-#include "version.h"
 #include "vim.h"
 
 enum Layer
@@ -29,6 +26,8 @@ enum Macro
 #define SYM_TAB LT(SymbolsR, KC_TAB)
 #define SYM_ENT LT(SymbolsL, KC_ENT)
 #define NUM_F13 LT(Numpad, KC_F13)
+
+qk_tap_dance_action_t tap_dance_actions[] = {};
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = 
 {
