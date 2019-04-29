@@ -1,8 +1,6 @@
 #ifndef CONFIG_X_H
 #define CONFIG_X_H
 
-#include "../../config.h"
-
 #undef LOCKING_SUPPORT_ENABLE
 #undef LOCKING_RESYNC_ENABLE
 

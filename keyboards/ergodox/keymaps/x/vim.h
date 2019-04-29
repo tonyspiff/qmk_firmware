@@ -4,8 +4,8 @@
  *
  * vim.h - inspired by: https://github.com/qmk/qmk_firmware/blob/master/keyboards/ergodox_ez/keymaps/vim/vim.h
  */
-#include "config.h"
-#include "keycode.h"
+#ifndef VIM_X_H
+#define VIM_X_H
 
 #define press(keycode) register_code(keycode)
 #define release(keycode) unregister_code(keycode)
@@ -84,3 +84,4 @@ void cmdCtrl(uint16_t keycode)
 	release(KC_LGUI);
 }
 
+#endif
