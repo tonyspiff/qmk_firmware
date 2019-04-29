@@ -15,9 +15,10 @@ enum Layer
 	Hotkeys
 };
 
-enum Macro
+enum TapDance
 {
-	CtrlTilde = 0
+	colon = 0,
+	tilde
 };
 
 #define KC_SUPR (QK_LCTL | QK_LALT | QK_LGUI)
@@ -27,7 +28,11 @@ enum Macro
 #define SYM_ENT LT(SymbolsL, KC_ENT)
 #define NUM_F13 LT(Numpad, KC_F13)
 
-qk_tap_dance_action_t tap_dance_actions[] = {};
+qk_tap_dance_action_t tap_dance_actions[] =
+{
+	[colon] = ACTION_TAP_DANCE_DOUBLE(KC_COLON, KC_SCOLON),
+	[tilde] = ACTION_TAP_DANCE_DOUBLE(KC_TILDE, KC_GRAVE)
+};
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = 
 {
@@ -35,9 +40,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] =
 (
 	// left hand
 	LOCKSCR,		KC_1,       KC_2,   	KC_3,		KC_4,   	KC_5,   KC_F11,
-	M(CtrlTilde),	KC_QUOT,    KC_COMM,	KC_DOT,		KC_P,   	KC_Y,   LCAG(KC_F13),
+	TD(tilde),		KC_QUOT,    KC_COMM,	KC_DOT,		KC_P,   	KC_Y,   LCAG(KC_F13),
 	LGUI_T(KC_ESC),	KC_A,       KC_O,		KC_E,		KC_U,   	KC_I,
-	KC_LSFT,        KC_COLN,    KC_Q,   	KC_J,		KC_K,   	KC_X,   HYPR(KC_F13),
+	KC_LSFT,        TD(colon),	KC_Q,   	KC_J,		KC_K,   	KC_X,   HYPR(KC_F13),
 	KC_LALT,		KC_HYPR,    KC_SUPR,	TT(Arrows),	SYM_TAB,
 
 				KC_LEFT,	KC_RGHT,
@@ -183,40 +188,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] =
 };
 
 // Runs just one time when the keyboard initializes.
-void matrix_init_user(void)
-{
-};
-
-static uint16_t start;
-
-const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt)
-{
-	switch (id)
-	{
-		// https://github.com/qmk/qmk_firmware/issues/50
-		case CtrlTilde:
-			if (record->event.pressed)
-			{
-				start = timer_read();
-
-				return MACRO(D(LCTL), END);
-			}
-			else
-			{
-				if (timer_elapsed(start) > TAPPING_TERM) 
-				{
-					return MACRO(U(LCTL), END);
-				}
-				else
-				{
-					return MACRO(U(LCTL), D(LSFT), T(GRV), U(LSFT), END);
-				}
-			}
-			break;
-	}
-
-	return MACRO_NONE;
-}
+void matrix_init_user(void) {};
 
 void leader_start(void) 
 {
