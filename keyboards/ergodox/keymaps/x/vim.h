@@ -7,15 +7,14 @@
 #ifndef VIM_X_H
 #define VIM_X_H
 
-#define press(keycode) register_code(keycode)
-#define release(keycode) unregister_code(keycode)
+#define press(keycode) register_code16(keycode)
+#define release(keycode) unregister_code16(keycode)
 
 LEADER_EXTERNS();
 
 void tap(uint16_t keycode)
 {
-    press(keycode);
-    release(keycode);
+	tap_code16(keycode);
 
 	leading = false;
 }
