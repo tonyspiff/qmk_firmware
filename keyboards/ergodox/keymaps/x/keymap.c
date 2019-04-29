@@ -3,9 +3,10 @@
  * http://www.keyboard-layout-editor.com/#/gists/67569b26aa9c30d3e6fde64dd48e9696
  */
 #include QMK_KEYBOARD_H
-#include "debug.h"
+#include "quantum_keycodes.h"
 #include "action_layer.h"
 #include "version.h"
+#include "vim.h"
 
 enum Layer
 {
@@ -222,12 +223,12 @@ LEADER_EXTERNS();
 
 void leader_start(void) 
 {
-	ergodox_right_led_1_on();
+	ergodox_right_led_3_on();
 }
 
 void leader_end(void)
 { 
-	ergodox_right_led_1_off();
+	ergodox_right_led_3_off();
 }
 
 // Runs constantly in the background, in a loop.
@@ -273,417 +274,179 @@ void matrix_scan_user(void)
 	// https://github.com/qmk/qmk_firmware/issues/370
 	// Custom leading trying to mimic some Vim and Vimperator commands.
 	// It activates before the timeout if sequence is complete but it has to be unambiguous.
-	if (leading)
+	if (leading == false)
+		return;
+
+	// w : ⌥ →
+	if (leader_sequence[0] == (KC_W))
 	{
-		uint8_t count = 1;
-		uint8_t offset = 0;
-		
-		// Count / Repetition (up to 9)
-		// FIXME: it doesn't work if the number is on a different layer
-		if (leader_sequence[0] >= (KC_1) && leader_sequence[0] <= (KC_9))
-		{
-			count = leader_sequence[0] - (KC_Z);
-			offset++;
-		}
+		option(KC_RGHT);
+		leading = false;
+	}
 
-		// ⎋ : Abort leading sequence
-		// FIXME: not working, maybe because Esc is a dual role key
-		if (leader_sequence[offset + 0] == (KC_ESC))
+	// b : ⌥ ←
+	else if (leader_sequence[0] == (KC_B))
+	{
+		option(KC_LEFT);
+		leading = false;
+	}
+
+	// a : ⌘ →
+	else if (leader_sequence[0] == (KC_A))
+	{
+		cmd(KC_RGHT);
+		leading = false;
+	}
+
+	// 0 : ⌘ ←
+	else if (leader_sequence[0] == (KC_0))
+	{
+		cmd(KC_LEFT);
+		leading = false;
+	}
+
+	/* Visual/Select/Shifted */
+	// vw : ⌥ ⇧ →
+	else if (leader_sequence[0] == (KC_V))
+	{
+		if (leader_sequence[1] == (KC_W))
 		{
+			optionShift(KC_RGHT);
 			leading = false;
 		}
 
-		// w : ⌥ →
-		else if (leader_sequence[offset + 0] == (KC_W))
+		// vb : ⌥ ⇧ ←
+		else if (leader_sequence[1] == (KC_B))
 		{
-			for (uint8_t i = 0; i < count; i++)
-			{
-				register_code(KC_LALT);
-				register_code(KC_RGHT);
-				unregister_code(KC_RGHT);
-				unregister_code(KC_LALT);
-			}
+			optionShift(KC_LEFT);
+			leading = false;
+		}
+	}
 
+	// TODO: Copy content before deleting
+	/* Deletion */
+	// dw : ⌥ ⌦
+	else if (leader_sequence[0] == (KC_D))
+	{
+		if (leader_sequence[1] == (KC_W))
+		{
+			option(KC_DEL);
 			leading = false;
 		}
 
-		// b : ⌥ ←
-		else if (leader_sequence[offset + 0] == (KC_B))
+		// db : ⌥ ⌫
+		else if (leader_sequence[1] == (KC_B))
 		{
-			for (uint8_t i = 0; i < count; i++)
-			{
-				register_code(KC_LALT);
-				register_code(KC_LEFT);
-				unregister_code(KC_LEFT);
-				unregister_code(KC_LALT);
-			}
-
+			option(KC_BSPC);
 			leading = false;
 		}
 
-		// a : ⌘ →
-		else if (leader_sequence[offset + 0] == (KC_A))
+		// dd : ⌘ → then ⌘ ⌫
+		else if (leader_sequence[1] == (KC_D))
 		{
-			for (uint8_t i = 0; i < count; i++)
-			{
-				register_code(KC_LGUI);
-				register_code(KC_RGHT);
-				unregister_code(KC_RGHT);
-				unregister_code(KC_LGUI);
-			}
+			cmd(KC_RGHT);
+			cmd(KC_BSPC);
+			leading = false;
+		}
+	}
 
+	/* CamelCase navigation */
+	// ,w : ⌃ →
+	else if (leader_sequence[0] == (KC_COMM))
+	{
+		if (leader_sequence[1] == (KC_W))
+		{
+			ctrl(KC_RGHT);
 			leading = false;
 		}
 
-		// 0 : ⌘ ←
-		else if (leader_sequence[offset + 0] == (KC_0))
+		// ,b : ⌃ ←
+		else if (leader_sequence[1] == (KC_B))
 		{
-			for (uint8_t i = 0; i < count; i++)
-			{
-				register_code(KC_LGUI);
-				register_code(KC_LEFT);
-				unregister_code(KC_LEFT);
-				unregister_code(KC_LGUI);
-			}
-
+			ctrl(KC_LEFT);
 			leading = false;
 		}
 
-		/* Visual/Select/Shifted */
-		// vw : ⌥ ⇧ →
-		else if (leader_sequence[offset + 0] == (KC_V))
+		// ,vw : ⌃ ⇧ →
+		else if (leader_sequence[1] == (KC_V) && leader_sequence[2] == (KC_W))
 		{
-			if (leader_sequence[offset + 1] == (KC_W))
-			{
-				for (uint8_t i = 0; i < count; i++)
-				{
-					register_code(KC_LALT);
-					register_code(KC_LSFT);
-					register_code(KC_RGHT);
-					unregister_code(KC_RGHT);
-					unregister_code(KC_LSFT);
-					unregister_code(KC_LALT);
-				}
-
-				leading = false;
-			}
-
-			// vb : ⌥ ⇧ ←
-			else if (leader_sequence[offset + 1] == (KC_B))
-			{
-				for (uint8_t i = 0; i < count; i++)
-				{
-					register_code(KC_LALT);
-					register_code(KC_LSFT);
-					register_code(KC_LEFT);
-					unregister_code(KC_LEFT);
-					unregister_code(KC_LSFT);
-					unregister_code(KC_LALT);
-				}
-
-				leading = false;
-			}
-		}
-
-		// TODO: Copy content before deleting
-		/* Deletion */
-		// dw : ⌥ ⌦
-		else if (leader_sequence[offset + 0] == (KC_D))
-		{
-			if (leader_sequence[offset + 1] == (KC_W))
-			{
-				for (uint8_t i = 0; i < count; i++)
-				{
-					register_code(KC_LALT);
-					register_code(KC_DEL);
-					unregister_code(KC_DEL);
-					unregister_code(KC_LALT);
-				}
-
-				leading = false;
-			}
-
-			// db : ⌥ ⌫
-			else if (leader_sequence[offset + 1] == (KC_B))
-			{
-				for (uint8_t i = 0; i < count; i++)
-				{
-					register_code(KC_LALT);
-					register_code(KC_BSPC);
-					unregister_code(KC_BSPC);
-					unregister_code(KC_LALT);
-				}
-
-				leading = false;
-			}
-
-			// dd : ⌘ → then ⌘ ⌫
-			else if (leader_sequence[offset + 1] == (KC_D))
-			{
-				for (uint8_t i = 0; i < count; i++)
-				{
-					register_code(KC_LGUI);
-					register_code(KC_RGHT);
-					unregister_code(KC_RGHT);
-					register_code(KC_BSPC);
-					unregister_code(KC_BSPC);
-					unregister_code(KC_LGUI);
-				}
-
-				leading = false;
-			}
-		}
-
-		/* CamelCase navigation */
-		// ,w : ⌃ →
-		else if (leader_sequence[offset + 0] == (KC_COMM))
-		{
-			if (leader_sequence[offset + 1] == (KC_W))
-			{
-				for (uint8_t i = 0; i < count; i++)
-				{
-					register_code(KC_LCTL);
-					register_code(KC_RGHT);
-					unregister_code(KC_RGHT);
-					unregister_code(KC_LCTL);
-				}
-
-				leading = false;
-			}
-
-			// ,b : ⌃ ←
-			else if (leader_sequence[offset + 1] == (KC_B))
-			{
-				for (uint8_t i = 0; i < count; i++)
-				{
-					register_code(KC_LCTL);
-					register_code(KC_LEFT);
-					unregister_code(KC_LEFT);
-					unregister_code(KC_LCTL);
-				}
-
-				leading = false;
-			}
-
-			// ,vw : ⌃ ⇧ →
-			else if (leader_sequence[offset + 1] == (KC_V) && leader_sequence[offset + 2] == (KC_W))
-			{
-				for (uint8_t i = 0; i < count; i++)
-				{
-					register_code(KC_LCTL);
-					register_code(KC_LSFT);
-					register_code(KC_RGHT);
-					unregister_code(KC_RGHT);
-					unregister_code(KC_LSFT);
-					unregister_code(KC_LCTL);
-				}
-
-				leading = false;
-			}
-
-			// ,vb : ⌃ ⇧ ←
-			else if (leader_sequence[offset + 1] == (KC_V) && leader_sequence[offset + 2] == (KC_B))
-			{
-				for (uint8_t i = 0; i < count; i++)
-				{
-					register_code(KC_LCTL);
-					register_code(KC_LSFT);
-					register_code(KC_LEFT);
-					unregister_code(KC_LEFT);
-					unregister_code(KC_LSFT);
-					unregister_code(KC_LCTL);
-				}
-
-				leading = false;
-			}
-
-			// ,db : ⌃ ⌫
-			else if (leader_sequence[offset + 1] == (KC_D) && leader_sequence[offset + 2] == (KC_B))
-			{
-				for (uint8_t i = 0; i < count; i++)
-				{
-					register_code(KC_LCTL);
-					register_code(KC_BSPC);
-					unregister_code(KC_BSPC);
-					unregister_code(KC_LCTL);
-				}
-
-				leading = false;
-			}
-
-			// ,dw : ⌃ ⌦
-			else if (leader_sequence[offset + 1] == (KC_D) && leader_sequence[offset + 2] == (KC_W))
-			{
-				for (uint8_t i = 0; i < count; i++)
-				{
-					register_code(KC_LCTL);
-					register_code(KC_DEL);
-					unregister_code(KC_DEL);
-					unregister_code(KC_LCTL);
-				}
-
-				leading = false;
-			}
-		}
-
-		// Terminal
-		else if (leader_sequence[offset + 0] == (KC_T))
-		{
-			// tw : ⌃ →
-			if (leader_sequence[offset + 1] == (KC_W))
-			{
-				for (uint8_t i = 0; i < count; i++)
-				{
-					register_code(KC_LCTL);
-					register_code(KC_RGHT);
-					unregister_code(KC_RGHT);
-					unregister_code(KC_LCTL);
-				}
-
-				leading = false;
-			}
-
-			// tb : ⌃ ←
-			else if (leader_sequence[offset + 1] == (KC_B))
-			{
-				for (uint8_t i = 0; i < count; i++)
-				{
-					register_code(KC_LCTL);
-					register_code(KC_LEFT);
-					unregister_code(KC_LEFT);
-					unregister_code(KC_LCTL);
-				}
-
-				leading = false;
-			}
-
-			// ta : ⌃ e ␣
-			else if (leader_sequence[offset + 1] == (KC_A))
-			{
-				for (uint8_t i = 0; i < count; i++)
-				{
-					register_code(KC_LCTL);
-					register_code(KC_E);
-					unregister_code(KC_E);
-					unregister_code(KC_LCTL);
-					register_code(KC_SPC);
-					unregister_code(KC_SPC);
-				}
-
-				leading = false;
-			}
-
-			// t0 : ⌃ a
-			else if (leader_sequence[offset + 1] == (KC_0))
-			{
-				for (uint8_t i = 0; i < count; i++)
-				{
-					register_code(KC_LCTL);
-					register_code(KC_A);
-					unregister_code(KC_A);
-					unregister_code(KC_LCTL);
-				}
-
-				leading = false;
-			}
-
-		}
-
-		// Tabs / Extra
-		else if (leader_sequence[offset + 0] == (KC_G))
-		{
-			// gt : ⌘ ⇧ →
-			if (leader_sequence[offset + 1] == (KC_T))
-			{
-				for (uint8_t i = 0; i < count; i++)
-				{
-					register_code(KC_LGUI);
-					register_code(KC_LSFT);
-					register_code(KC_RGHT);
-					unregister_code(KC_RGHT);
-					unregister_code(KC_LSFT);
-					unregister_code(KC_LGUI);
-				}
-
-				leading = false;
-			}
-
-			// ge : ⌘ ⇧ ←
-			else if (leader_sequence[offset + 1] == (KC_E))
-			{
-				for (uint8_t i = 0; i < count; i++)
-				{
-					register_code(KC_LGUI);
-					register_code(KC_LSFT);
-					register_code(KC_LEFT);
-					unregister_code(KC_LEFT);
-					unregister_code(KC_LSFT);
-					unregister_code(KC_LGUI);
-				}
-
-				leading = false;
-			}
-		}
-
-		// Window / Split / Panel
-		else if (leader_sequence[offset + 0] == (KC_ENT))
-		{
-			// ⏎ w : ⌘ ]
-			if (leader_sequence[offset + 1] == (KC_W))
-			{
-				for (uint8_t i = 0; i < count; i++)
-				{
-					register_code(KC_LGUI);
-					register_code(KC_RBRC);
-					unregister_code(KC_RBRC);
-					unregister_code(KC_LGUI);
-				}
-
-				leading = false;
-			}
-		}
-
-		// s : ⌘ ⌃ →
-		else if (leader_sequence[offset + 0] == (KC_S))
-		{
-			for (uint8_t i = 0; i < count; i++)
-			{
-				register_code(KC_LGUI);
-				register_code(KC_LCTL);
-				register_code(KC_RGHT);
-				unregister_code(KC_RGHT);
-				unregister_code(KC_LCTL);
-				unregister_code(KC_LGUI);
-			}
-
+			ctrlShift(KC_RGHT);
 			leading = false;
 		}
 
-		// h : ⌘ ⌃ ←
-		else if (leader_sequence[offset + 0] == (KC_H))
+		// ,vb : ⌃ ⇧ ←
+		else if (leader_sequence[1] == (KC_V) && leader_sequence[2] == (KC_B))
 		{
-			for (uint8_t i = 0; i < count; i++)
-			{
-				register_code(KC_LGUI);
-				register_code(KC_LCTL);
-				register_code(KC_LEFT);
-				unregister_code(KC_LEFT);
-				unregister_code(KC_LCTL);
-				unregister_code(KC_LGUI);
-			}
-
+			ctrlShift(KC_LEFT);
 			leading = false;
 		}
 
-		if (timer_elapsed(leader_time) > LEADER_TIMEOUT)
+		// ,db : ⌃ ⌫
+		else if (leader_sequence[1] == (KC_D) && leader_sequence[2] == (KC_B))
 		{
+			ctrl(KC_BSPC);
 			leading = false;
 		}
 
-		if (leading == false)
+		// ,dw : ⌃ ⌦
+		else if (leader_sequence[1] == (KC_D) && leader_sequence[2] == (KC_W))
 		{
-			leader_end();
+			ctrl(KC_DEL);
+			leading = false;
 		}
+	}
+
+	// Tabs / Extra
+	else if (leader_sequence[0] == (KC_G))
+	{
+		// gt : ⌘ ⇧ →
+		if (leader_sequence[1] == (KC_T))
+		{
+			cmdShift(KC_RGHT);
+			leading = false;
+		}
+
+		// ge : ⌘ ⇧ ←
+		else if (leader_sequence[1] == (KC_E))
+		{
+			cmdShift(KC_LEFT);
+			leading = false;
+		}
+	}
+
+	// Window / Split / Panel
+	else if (leader_sequence[0] == (KC_ENT))
+	{
+		// ⏎ w : ⌘ ]
+		if (leader_sequence[1] == (KC_W))
+		{
+			cmd(KC_RBRC);
+			leading = false;
+		}
+	}
+
+	// s : ⌘ ⌃ →
+	else if (leader_sequence[0] == (KC_S))
+	{
+		cmdCtrl(KC_RGHT);
+		leading = false;
+	}
+
+	// h : ⌘ ⌃ ←
+	else if (leader_sequence[0] == (KC_H))
+	{
+		cmdCtrl(KC_LEFT);
+		leading = false;
+	}
+
+	if (timer_elapsed(leader_time) > LEADER_TIMEOUT)
+	{
+		leading = false;
+	}
+
+	if (leading == false)
+	{
+		leader_end();
 	}
 };
 
