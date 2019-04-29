@@ -1,13 +1,23 @@
+/* *
+ * X - A dvorak based, vim inspired keymap for ergodox keyboards
+ * http://www.keyboard-layout-editor.com/#/gists/67569b26aa9c30d3e6fde64dd48e9696
+ *
+ * vim.h - inspired by: https://github.com/qmk/qmk_firmware/blob/master/keyboards/ergodox_ez/keymaps/vim/vim.h
+ */
 #include "config.h"
 #include "keycode.h"
 
 #define press(keycode) register_code(keycode)
 #define release(keycode) unregister_code(keycode)
 
+LEADER_EXTERNS();
+
 void tap(uint16_t keycode)
 {
     press(keycode);
     release(keycode);
+
+	leading = false;
 }
 
 void cmd(uint16_t keycode) 

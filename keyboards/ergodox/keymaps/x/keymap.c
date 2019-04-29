@@ -219,8 +219,6 @@ const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt)
 	return MACRO_NONE;
 }
 
-LEADER_EXTERNS();
-
 void leader_start(void) 
 {
 	ergodox_right_led_3_on();
@@ -274,35 +272,31 @@ void matrix_scan_user(void)
 	// https://github.com/qmk/qmk_firmware/issues/370
 	// Custom leading trying to mimic some Vim and Vimperator commands.
 	// It activates before the timeout if sequence is complete but it has to be unambiguous.
-	if (leading == false)
+	if (!leading)
 		return;
 
 	// w : ⌥ →
 	if (leader_sequence[0] == (KC_W))
 	{
 		option(KC_RGHT);
-		leading = false;
 	}
 
 	// b : ⌥ ←
 	else if (leader_sequence[0] == (KC_B))
 	{
 		option(KC_LEFT);
-		leading = false;
 	}
 
 	// a : ⌘ →
 	else if (leader_sequence[0] == (KC_A))
 	{
 		cmd(KC_RGHT);
-		leading = false;
 	}
 
 	// 0 : ⌘ ←
 	else if (leader_sequence[0] == (KC_0))
 	{
 		cmd(KC_LEFT);
-		leading = false;
 	}
 
 	/* Visual/Select/Shifted */
@@ -312,14 +306,12 @@ void matrix_scan_user(void)
 		if (leader_sequence[1] == (KC_W))
 		{
 			optionShift(KC_RGHT);
-			leading = false;
 		}
 
 		// vb : ⌥ ⇧ ←
 		else if (leader_sequence[1] == (KC_B))
 		{
 			optionShift(KC_LEFT);
-			leading = false;
 		}
 	}
 
@@ -331,14 +323,12 @@ void matrix_scan_user(void)
 		if (leader_sequence[1] == (KC_W))
 		{
 			option(KC_DEL);
-			leading = false;
 		}
 
 		// db : ⌥ ⌫
 		else if (leader_sequence[1] == (KC_B))
 		{
 			option(KC_BSPC);
-			leading = false;
 		}
 
 		// dd : ⌘ → then ⌘ ⌫
@@ -346,7 +336,6 @@ void matrix_scan_user(void)
 		{
 			cmd(KC_RGHT);
 			cmd(KC_BSPC);
-			leading = false;
 		}
 	}
 
@@ -357,42 +346,36 @@ void matrix_scan_user(void)
 		if (leader_sequence[1] == (KC_W))
 		{
 			ctrl(KC_RGHT);
-			leading = false;
 		}
 
 		// ,b : ⌃ ←
 		else if (leader_sequence[1] == (KC_B))
 		{
 			ctrl(KC_LEFT);
-			leading = false;
 		}
 
 		// ,vw : ⌃ ⇧ →
 		else if (leader_sequence[1] == (KC_V) && leader_sequence[2] == (KC_W))
 		{
 			ctrlShift(KC_RGHT);
-			leading = false;
 		}
 
 		// ,vb : ⌃ ⇧ ←
 		else if (leader_sequence[1] == (KC_V) && leader_sequence[2] == (KC_B))
 		{
 			ctrlShift(KC_LEFT);
-			leading = false;
 		}
 
 		// ,db : ⌃ ⌫
 		else if (leader_sequence[1] == (KC_D) && leader_sequence[2] == (KC_B))
 		{
 			ctrl(KC_BSPC);
-			leading = false;
 		}
 
 		// ,dw : ⌃ ⌦
 		else if (leader_sequence[1] == (KC_D) && leader_sequence[2] == (KC_W))
 		{
 			ctrl(KC_DEL);
-			leading = false;
 		}
 	}
 
@@ -403,14 +386,12 @@ void matrix_scan_user(void)
 		if (leader_sequence[1] == (KC_T))
 		{
 			cmdShift(KC_RGHT);
-			leading = false;
 		}
 
 		// ge : ⌘ ⇧ ←
 		else if (leader_sequence[1] == (KC_E))
 		{
 			cmdShift(KC_LEFT);
-			leading = false;
 		}
 	}
 
@@ -421,7 +402,6 @@ void matrix_scan_user(void)
 		if (leader_sequence[1] == (KC_W))
 		{
 			cmd(KC_RBRC);
-			leading = false;
 		}
 	}
 
@@ -429,14 +409,12 @@ void matrix_scan_user(void)
 	else if (leader_sequence[0] == (KC_S))
 	{
 		cmdCtrl(KC_RGHT);
-		leading = false;
 	}
 
 	// h : ⌘ ⌃ ←
 	else if (leader_sequence[0] == (KC_H))
 	{
 		cmdCtrl(KC_LEFT);
-		leading = false;
 	}
 
 	if (timer_elapsed(leader_time) > LEADER_TIMEOUT)
