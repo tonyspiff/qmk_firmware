@@ -40,7 +40,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] =
 (
 	// left hand
 	LOCKSCR,		KC_1,       KC_2,   	KC_3,		KC_4,   	KC_5,   KC_F11,
-	TD(tilde),		KC_QUOT,    KC_COMM,	KC_DOT,		KC_P,   	KC_Y,   LCAG(KC_F13),
+	LCTL_T(KC_GRV),	KC_QUOT,    KC_COMM,	KC_DOT,		KC_P,   	KC_Y,   LCAG(KC_F13),
 	LGUI_T(KC_ESC),	KC_A,       KC_O,		KC_E,		KC_U,   	KC_I,
 	KC_LSFT,        TD(colon),	KC_Q,   	KC_J,		KC_K,   	KC_X,   HYPR(KC_F13),
 	KC_LALT,		KC_HYPR,    KC_SUPR,	TT(Arrows),	SYM_TAB,
@@ -65,7 +65,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] =
 (
 	// left hand
 	SHUTDOWN,		KC_F1,		KC_F2,		KC_F3,		KC_F4,		KC_F5,		LGUI(KC_F11),
-	LCTL_T(KC_GRV),	KC_EXLM,	KC_AT,		KC_HASH,	KC_DLR,		KC_PERC,	_______,
+	KC_TILD,		KC_EXLM,	KC_AT,		KC_HASH,	KC_DLR,		KC_PERC,	_______,
 	_______,		KC_EQL,		KC_LBRC,	KC_LPRN,	KC_LCBR,	KC_PLUS,
 	_______,		KC_SCLN,	KC_RBRC,	KC_RPRN,	KC_RCBR,	KC_BSLS,	_______,
 	_______,		_______,	_______,	_______,	_______,
