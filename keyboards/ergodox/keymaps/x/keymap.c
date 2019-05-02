@@ -4,6 +4,7 @@
  */
 #include QMK_KEYBOARD_H
 #include "vim.h"
+#include "ergodox_leds.h"
 
 enum Layer
 {
@@ -42,7 +43,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] =
 	LOCKSCR,		KC_F1,      KC_F2,   	KC_F3,		KC_F4,   	KC_F5,	KC_F11,
 	LCTL_T(KC_GRV),	KC_QUOT,    KC_COMM,	KC_DOT,		KC_P,   	KC_Y,   LCAG(KC_F13),
 	LGUI_T(KC_ESC),	KC_A,       KC_O,		KC_E,		KC_U,   	KC_I,
-	KC_LSFT,        TD(colon),	KC_Q,   	KC_J,		KC_K,   	KC_X,   HYPR(KC_F13),
+	OSM(MOD_LSFT),	TD(colon),	KC_Q,   	KC_J,		KC_K,   	KC_X,   HYPR(KC_F13),
 	KC_LALT,		KC_HYPR,    KC_SUPR,	TT(Arrows),	SYM_TAB,
 
 				KC_LEFT,	KC_RGHT,
@@ -53,7 +54,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] =
 	KC_F12,			KC_F6, 		KC_F7, 		KC_F8,   	KC_F9,   	KC_F10,   	KC_CAPS,
 	RGUI(KC_GRV),	KC_F,	 	KC_G, 		KC_C,   	KC_R,   	KC_L,		RCTL_T(KC_SLSH),
 					KC_D,   	KC_H, 		KC_T,  		KC_N,   	KC_S,		RGUI_T(KC_MINS),
-	RGUI(KC_TAB),	KC_B,   	KC_M, 		KC_W,   	KC_V,   	KC_Z,		KC_RSFT,
+	RGUI(KC_TAB),	KC_B,   	KC_M, 		KC_W,   	KC_V,   	KC_Z,		OSM(MOD_RSFT),
 								SYM_ENT,	KC_LEAD,	KC_SUPR,  	KC_HYPR,	KC_RALT,
 
 	KC_MPLY,		KC_MNXT,
@@ -192,12 +193,28 @@ void matrix_init_user(void) {};
 
 void leader_start(void) 
 {
-	ergodox_right_led_3_on();
+	toggleLed(true, LedColorBlue);
 }
 
 void leader_end(void)
 { 
-	ergodox_right_led_3_off();
+	toggleLed(false, LedColorBlue);
+}
+
+// Called by QMK during key processing before the actual key event is handled.
+bool process_record_user (uint16_t keycode, keyrecord_t *record) 
+{
+	if (!record->event.pressed) { return true; }
+
+	if (keycode == KC_ESC
+		&& get_oneshot_mods()
+		&& !has_oneshot_mods_timed_out())
+	{
+		clear_oneshot_mods();
+		return false;
+	}
+
+	return true;
 }
 
 // Runs constantly in the background, in a loop.
@@ -207,9 +224,7 @@ void matrix_scan_user(void)
 
 	if (!leading)
 	{
-		ergodox_right_led_1_off();
-		ergodox_right_led_2_off();
-		ergodox_right_led_3_off();
+		toggleLed(false, LedColorAll);
 	}
 
 	uint8_t layer = biton32(layer_state);
@@ -217,28 +232,36 @@ void matrix_scan_user(void)
 	switch (layer)
 	{
 		case SymbolsL:
-			ergodox_right_led_2_on();
+			toggleLed(true, LedColorGreen);
 			break;
 
 		case SymbolsR:
-			ergodox_right_led_2_on();
+			toggleLed(true, LedColorGreen);
 			break;
 
 		case Numpad:
-			ergodox_right_led_3_on();
+			toggleLed(true, LedColorBlue);
 			break;
 
 		case Arrows:
-			ergodox_right_led_1_on();
+			toggleLed(true, LedColorRed);
 			break;
 
 		case Hotkeys:
-			ergodox_right_led_1_on();
+			toggleLed(true, LedColorRed);
 			break;
 
 		default:
 			break;
 	}
+
+	// One Shot Modifiers LEDs
+	bool isShiftOn = keyboard_report->mods & MOD_BIT(KC_LSFT)
+			|| ((get_oneshot_mods() & MOD_BIT(KC_LSFT)) && !has_oneshot_mods_timed_out()) 
+			|| keyboard_report->mods & MOD_BIT(KC_RSFT)
+			|| ((get_oneshot_mods() & MOD_BIT(KC_RSFT)) && !has_oneshot_mods_timed_out());
+
+	toggleLed(isShiftOn, LedColorBlue);
 
 	// https://github.com/qmk/qmk_firmware/issues/370
 	// Custom leading trying to mimic some Vim and Vimperator commands.
