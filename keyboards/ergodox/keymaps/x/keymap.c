@@ -6,6 +6,8 @@
 #include "vim.h"
 #include "ergodox_leds.h"
 
+#define curLayer (biton32(layer_state))
+
 enum Layer
 {
 	Base = 0,
@@ -194,19 +196,6 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] =
 )
 };
 
-// Runs just one time when the keyboard initializes.
-void matrix_init_user(void) {};
-
-void leader_start(void) 
-{
-	toggleLed(true, LedColorBlue);
-}
-
-void leader_end(void)
-{ 
-	toggleLed(false, LedColorBlue);
-}
-
 // Called by QMK during key processing before the actual key event is handled.
 bool process_record_user (uint16_t keycode, keyrecord_t *record) 
 {
@@ -226,48 +215,25 @@ bool process_record_user (uint16_t keycode, keyrecord_t *record)
 // Runs constantly in the background, in a loop.
 void matrix_scan_user(void) 
 {
-	ergodox_board_led_off();
-
-	if (!leading)
-	{
-		toggleLed(false, LedColorAll);
-	}
-
-	uint8_t layer = biton32(layer_state);
-
-	switch (layer)
-	{
-		case SymbolsL:
-			toggleLed(true, LedColorGreen);
-			break;
-
-		case SymbolsR:
-			toggleLed(true, LedColorGreen);
-			break;
-
-		case Numpad:
-			toggleLed(true, LedColorBlue);
-			break;
-
-		case Arrows:
-			toggleLed(true, LedColorRed);
-			break;
-
-		case Hotkeys:
-			toggleLed(true, LedColorRed);
-			break;
-
-		default:
-			break;
-	}
-
 	// One Shot Modifiers LEDs
 	bool isShiftOn = keyboard_report->mods & MOD_BIT(KC_LSFT)
 			|| ((get_oneshot_mods() & MOD_BIT(KC_LSFT)) && !has_oneshot_mods_timed_out()) 
 			|| keyboard_report->mods & MOD_BIT(KC_RSFT)
 			|| ((get_oneshot_mods() & MOD_BIT(KC_RSFT)) && !has_oneshot_mods_timed_out());
 
-	toggleLed(isShiftOn, LedColorBlue);
+	bool isRedLedOn = curLayer == Arrows
+		|| curLayer == Hotkeys;
+
+	bool isGreenLedOn = curLayer == SymbolsL
+		|| curLayer == SymbolsR;
+
+	bool isBlueLedOn = leading
+		|| isShiftOn
+		|| curLayer == Numpad;
+
+	toggleLed(isRedLedOn, LedColorRed);
+	toggleLed(isGreenLedOn, LedColorGreen);
+	toggleLed(isBlueLedOn, LedColorBlue);
 
 	// https://github.com/qmk/qmk_firmware/issues/370
 	// Custom leading trying to mimic some Vim and Vimperator commands.
