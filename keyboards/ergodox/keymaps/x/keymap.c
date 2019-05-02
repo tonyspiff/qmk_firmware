@@ -18,8 +18,11 @@ enum Layer
 
 enum TapDance
 {
-	colon = 0,
-	tilde
+	Colon = 0,
+	Bracket,
+	Paren,
+	Brace,
+	Tilde
 };
 
 #define KC_SUPR (QK_LCTL | QK_LALT | QK_LGUI)
@@ -31,8 +34,11 @@ enum TapDance
 
 qk_tap_dance_action_t tap_dance_actions[] =
 {
-	[colon] = ACTION_TAP_DANCE_DOUBLE(KC_COLON, KC_SCOLON),
-	[tilde] = ACTION_TAP_DANCE_DOUBLE(KC_TILDE, KC_GRAVE)
+	[Colon] = ACTION_TAP_DANCE_DOUBLE(KC_COLON, KC_SCOLON),
+	[Bracket] = ACTION_TAP_DANCE_DOUBLE(KC_LBRACKET, KC_RBRACKET),
+	[Paren] = ACTION_TAP_DANCE_DOUBLE(KC_LEFT_PAREN, KC_RIGHT_PAREN),
+	[Brace] = ACTION_TAP_DANCE_DOUBLE(KC_LEFT_CURLY_BRACE, KC_RIGHT_CURLY_BRACE),
+	[Tilde] = ACTION_TAP_DANCE_DOUBLE(KC_TILDE, KC_GRAVE)
 };
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = 
@@ -43,7 +49,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] =
 	LOCKSCR,		KC_F1,      KC_F2,   	KC_F3,		KC_F4,   	KC_F5,	KC_F11,
 	LCTL_T(KC_GRV),	KC_QUOT,    KC_COMM,	KC_DOT,		KC_P,   	KC_Y,   LCAG(KC_F13),
 	LGUI_T(KC_ESC),	KC_A,       KC_O,		KC_E,		KC_U,   	KC_I,
-	OSM(MOD_LSFT),	TD(colon),	KC_Q,   	KC_J,		KC_K,   	KC_X,   HYPR(KC_F13),
+	OSM(MOD_LSFT),	TD(Colon),	KC_Q,   	KC_J,		KC_K,   	KC_X,   HYPR(KC_F13),
 	KC_LALT,		KC_HYPR,    KC_SUPR,	TT(Arrows),	SYM_TAB,
 
 				KC_LEFT,	KC_RGHT,
@@ -65,11 +71,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] =
 [SymbolsL] = LAYOUT_ergodox
 (
 	// left hand
-	SHUTDOWN,		KC_F1,		KC_F2,		KC_F3,		KC_F4,		KC_F5,		LGUI(KC_F11),
-	KC_TILD,		KC_EXLM,	KC_AT,		KC_HASH,	KC_DLR,		KC_PERC,	_______,
-	_______,		KC_EQL,		KC_LBRC,	KC_LPRN,	KC_LCBR,	KC_PLUS,
-	_______,		KC_SCLN,	KC_RBRC,	KC_RPRN,	KC_RCBR,	KC_BSLS,	_______,
-	_______,		_______,	_______,	_______,	_______,
+	SHUTDOWN,		KC_F1,		KC_F2,			KC_F3,		KC_F4,		KC_F5,		LGUI(KC_F11),
+	KC_TILD,		KC_EXLM,	KC_AT,			KC_HASH,	KC_DLR,		KC_PERC,	_______,
+	_______,		KC_EQL,		TD(Bracket),	TD(Paren),	TD(Brace),	KC_PLUS,
+	_______,		KC_SCLN,	_______,		_______,	_______,	KC_BSLS,	_______,
+	_______,		_______,	_______,		_______,	_______,
 
 						_______,		_______,
 										HYPR(KC_F17),
