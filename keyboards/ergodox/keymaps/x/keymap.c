@@ -27,6 +27,11 @@ enum TapDance
 	Tilde
 };
 
+enum Keycode
+{
+	KeycodeSL = SAFE_RANGE
+};
+
 #define KC_SUPR (QK_LCTL | QK_LALT | QK_LGUI)
 #define SHUTDOWN LCAG(KC_EJCT)
 #define LOCKSCR RCTL(RSFT(KC_PWR))
@@ -63,7 +68,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] =
 	RGUI(KC_GRV),	KC_F,	 	KC_G, 		KC_C,   	KC_R,   	KC_L,		RCTL_T(KC_SLSH),
 					KC_D,   	KC_H, 		KC_T,  		KC_N,   	KC_S,		RGUI_T(KC_MINS),
 	RGUI(KC_TAB),	KC_B,   	KC_M, 		KC_W,   	KC_V,   	KC_Z,		OSM(MOD_RSFT),
-								SYM_ENT,	KC_LEAD,	KC_SUPR,  	KC_HYPR,	KC_RALT,
+								SYM_ENT,	KeycodeSL,	KC_SUPR,  	KC_HYPR,	KC_RALT,
 
 	KC_MPLY,		KC_MNXT,
 	KC_F16,
@@ -73,11 +78,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] =
 [SymbolsL] = LAYOUT_ergodox
 (
 	// left hand
-	SHUTDOWN,		KC_F1,		KC_F2,			KC_F3,		KC_F4,		KC_F5,		LGUI(KC_F11),
-	KC_TILD,		KC_EXLM,	KC_AT,			KC_HASH,	KC_DLR,		KC_PERC,	_______,
-	_______,		KC_EQL,		TD(Bracket),	TD(Paren),	TD(Brace),	KC_PLUS,
-	_______,		KC_SCLN,	_______,		_______,	_______,	KC_BSLS,	_______,
-	_______,		_______,	_______,		_______,	_______,
+	SHUTDOWN,		KC_F1,		KC_F2,			KC_F3,			KC_F4,		KC_F5,		LGUI(KC_F11),
+	KC_TILD,		KC_EXLM,	KC_AT,			KC_HASH,		KC_DLR,		KC_PERC,	_______,
+	_______,		KC_EQL,		TD(Bracket),	TD(Paren),		TD(Brace),	KC_PLUS,
+	_______,		KC_SCLN,	_______,		KC_DOWN,		KC_UP,		KC_BSLS,	_______,
+	_______,		_______,	_______,		_______,		_______,
 
 						_______,		_______,
 										HYPR(KC_F17),
@@ -196,17 +201,44 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] =
 )
 };
 
+uint16_t symbolsTimer = 0;
+bool isSLActive = false;
+
 // Called by QMK during key processing before the actual key event is handled.
 bool process_record_user (uint16_t keycode, keyrecord_t *record) 
 {
-	if (!record->event.pressed) { return true; }
-
 	if (keycode == KC_ESC
+		&& record->event.pressed
 		&& get_oneshot_mods()
 		&& !has_oneshot_mods_timed_out())
 	{
 		clear_oneshot_mods();
 		return false;
+	}
+
+	if (keycode == KeycodeSL)
+	{
+		layer_on(SymbolsL);
+		isSLActive = true;
+		symbolsTimer = timer_read();
+
+		return false;
+	}
+
+	switch (keycode)
+	{
+		case KC_DOWN:
+		case KC_UP:
+			symbolsTimer = timer_read();
+			break;
+
+		default:
+			if (isSLActive && curLayer == SymbolsL)
+			{
+				/* isSLActive = false; */
+				symbolsTimer = 0;
+				/* layer_off(SymbolsL); */
+			}
 	}
 
 	return true;
@@ -234,6 +266,14 @@ void matrix_scan_user(void)
 	toggleLed(isRedLedOn, LedColorRed);
 	toggleLed(isGreenLedOn, LedColorGreen);
 	toggleLed(isBlueLedOn, LedColorBlue);
+
+	if (isSLActive
+		&& timer_elapsed(symbolsTimer) >= 2000)
+	{
+		isSLActive = false;
+		symbolsTimer = 0;
+		layer_off(SymbolsL);
+	}
 
 	// https://github.com/qmk/qmk_firmware/issues/370
 	// Custom leading trying to mimic some Vim and Vimperator commands.
@@ -303,6 +343,8 @@ void matrix_scan_user(void)
 			cmd(KC_RGHT);
 			cmd(KC_BSPC);
 		}
+
+		// FIXME: There should be an else case to set `leading` to false
 	}
 
 	/* CamelCase navigation */

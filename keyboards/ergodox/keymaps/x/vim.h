@@ -7,8 +7,8 @@
 #ifndef VIM_X_H
 #define VIM_X_H
 
-#define press(keycode) register_code16(keycode)
-#define release(keycode) unregister_code16(keycode)
+#define press(keycode) register_code(keycode)
+#define release(keycode) unregister_code(keycode)
 
 LEADER_EXTERNS();
 
