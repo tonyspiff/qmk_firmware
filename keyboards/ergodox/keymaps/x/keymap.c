@@ -14,8 +14,7 @@ enum Layer
 	SymbolsL,
 	SymbolsR,
 	Numpad,
-	Arrows,
-	Hotkeys
+	Arrows
 };
 
 enum TapDance
@@ -67,7 +66,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] =
 
 	KC_MPLY,		KC_MNXT,
 	KC_F16,
-	RCTL(KC_F2),	OSL(Hotkeys),	KC_BSPC
+	RCTL(KC_F2),	KC_LEAD,	KC_BSPC
 ),
 
 [SymbolsL] = LAYOUT_ergodox
@@ -168,31 +167,6 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] =
 	_______,	_______,
 	_______,
 	_______,	_______,	_______
-),
-
-[Hotkeys] = LAYOUT_ergodox
-(
-   	// left hand
-	_______,	_______,		_______,		_______,		_______,		_______,		_______,
-	_______,	LCAG(KC_F1),	LCAG(KC_F2),	LCAG(KC_F3),	LCAG(KC_F4),	LCAG(KC_F5),	_______,
-	_______,	MEH(KC_F1),		MEH(KC_F2),		MEH(KC_F3),		MEH(KC_F4),		MEH(KC_F5),
-	_______,	HYPR(KC_F1),	HYPR(KC_F2),	HYPR(KC_F3),	HYPR(KC_F4),	HYPR(KC_F5),	_______,
-	_______,	_______,		_______,		_______,		LCAG(KC_F11),
-
-					_______,		_______,
-									_______,
-	MEH(KC_F11),	HYPR(KC_F11),	_______,
-
-	// right hand
-	_______,	_______,		_______,		_______,		_______,		_______,		_______,
-	_______,	LCAG(KC_F6),	LCAG(KC_F7),	LCAG(KC_F8),	LCAG(KC_F9),	LCAG(KC_F10),	_______,
-				MEH(KC_F6),		MEH(KC_F7),		MEH(KC_F8),		MEH(KC_F9),		RGUI(KC_SPC),	_______,
-	_______,	HYPR(KC_F6),	HYPR(KC_F7),	HYPR(KC_F8),	HYPR(KC_F9),	HYPR(KC_F10),	_______,
-								LCAG(KC_F12),	_______,		_______,		_______,		_______,
-
-	_______,	_______,
-	_______,
-	_______,	_______,	HYPR(KC_F12)
 )
 };
 
@@ -221,8 +195,7 @@ void matrix_scan_user(void)
 			|| keyboard_report->mods & MOD_BIT(KC_RSFT)
 			|| ((get_oneshot_mods() & MOD_BIT(KC_RSFT)) && !has_oneshot_mods_timed_out());
 
-	bool isRedLedOn = curLayer == Arrows
-		|| curLayer == Hotkeys;
+	bool isRedLedOn = curLayer == Arrows;
 
 	bool isGreenLedOn = curLayer == SymbolsL
 		|| curLayer == SymbolsR;
