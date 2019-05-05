@@ -7,80 +7,47 @@
 #ifndef VIM_X_H
 #define VIM_X_H
 
+LEADER_EXTERNS();
+
+#define KC_SUPR (QK_LCTL | QK_LALT | QK_LGUI)
+#define SUPR(kc) (QK_LCTL | QK_LALT | QK_LGUI | (kc))
+
 #define press(keycode) register_code16(keycode)
 #define release(keycode) unregister_code16(keycode)
 
-LEADER_EXTERNS();
+#define bindFirstSequence(key, cmd) if (leader_sequence[0] == (key)) { cmd; }
+#define bindFirstSequenceTwo(key1, key2, cmd) if (leader_sequence[0] == (key1) && leader_sequence[1] == (key2)) { cmd; }
+#define bindFirstSequenceThree(key1, key2, key3, cmd) if (leader_sequence[0] == (key1) && leader_sequence[1] == (key2) && leader_sequence[2] == (key3)) { cmd; }
+#define bindFirstSequenceFour(key1, key2, key3, key4, cmd) if (leader_sequence[0] == (key1) && leader_sequence[1] == (key2) && leader_sequence[2] == (key3) && leader_sequence[3] == (key4)) { cmd; }
+#define bindFirstSequenceFive(key1, key2, key3, key4, key5, cmd) if (leader_sequence[0] == (key1) && leader_sequence[1] == (key2) && leader_sequence[2] == (key3) && leader_sequence[3] == (key4) && leader_sequence[4] == (key5)) { cmd; }
+#define bindFirstSequenceTwoTwo(key1, key2, cmd1, cmd2) if (leader_sequence[0] == (key1) && leader_sequence[1] == (key2)) { cmd1; cmd2; }
 
-void tap(uint16_t keycode)
+#define bindSequence(key, cmd) else bindFirstSequence(key, cmd)
+#define bindSequenceTwo(key1, key2, cmd) else bindFirstSequenceTwo(key1, key2, cmd)
+#define bindSequenceThree(key1, key2, key3, cmd) else bindFirstSequenceThree(key1, key2, key3, cmd)
+#define bindSequenceFour(key1, key2, key3, key4, cmd) else bindFirstSequenceFour(key1, key2, key3, key4, cmd)
+#define bindSequenceFive(key1, key2, key3, key4, key5, cmd) else bindFirstSequenceFive(key1, key2, key3, key4, key5, cmd)
+#define bindSequenceTwoTwo(key1, key2, cmd1, cmd2) else bindFirstSequenceTwoTwo(key1, key2, cmd1, cmd2)
+
+void tap(uint16_t code);
+void repeat(void);
+
+static uint16_t previousKeycode = 0;
+
+void tap(uint16_t code)
 {
-	tap_code16(keycode);
-
+	previousKeycode = code;
+	tap_code16(code);
 	leading = false;
 }
 
-void cmd(uint16_t keycode) 
+void repeat()
 {
-	press(KC_LGUI);
-	tap(keycode);
-	release(KC_LGUI);
-}
+	if (previousKeycode == 0)
+		return;
 
-void ctrl(uint16_t keycode) 
-{
-	press(KC_LCTRL);
-	tap(keycode);
-	release(KC_LCTRL);
-}
-
-void shift(uint16_t keycode) 
-{
-	press(KC_LSHIFT);
-	tap(keycode);
-	release(KC_LSHIFT);
-}
-
-void option(uint16_t keycode) 
-{
-	press(KC_LALT);
-	tap(keycode);
-	release(KC_LALT);
-}
-
-void cmdShift(uint16_t keycode) 
-{
-	press(KC_LGUI);
-	press(KC_LSHIFT);
-	tap(keycode);
-	release(KC_LSHIFT);
-	release(KC_LGUI);
-}
-
-void optionShift(uint16_t keycode) 
-{
-	press(KC_LALT);
-	press(KC_LSHIFT);
-	tap(keycode);
-	release(KC_LSHIFT);
-	release(KC_LALT);
-}
-
-void ctrlShift(uint16_t keycode) 
-{
-	press(KC_LCTRL);
-	press(KC_LSHIFT);
-	tap(keycode);
-	release(KC_LSHIFT);
-	release(KC_LCTRL);
-}
-
-void cmdCtrl(uint16_t keycode) 
-{
-	press(KC_LGUI);
-	press(KC_LCTRL);
-	tap(keycode);
-	release(KC_LCTRL);
-	release(KC_LGUI);
+	tap(previousKeycode);
 }
 
 #endif
+
