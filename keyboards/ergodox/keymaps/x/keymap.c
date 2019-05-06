@@ -13,13 +13,13 @@ enum Layer
 	Base = 0,
 	SymbolsL,
 	SymbolsR,
-	Numpad,
-	Arrows
+	Numpad
 };
 
 enum TapDance
 {
 	Colon = 0,
+	Quote,
 	Bracket,
 	Paren,
 	Brace,
@@ -35,6 +35,7 @@ enum TapDance
 qk_tap_dance_action_t tap_dance_actions[] =
 {
 	[Colon] = ACTION_TAP_DANCE_DOUBLE(KC_COLON, KC_SCOLON),
+	[Quote] = ACTION_TAP_DANCE_DOUBLE(KC_QUOTE, KC_DOUBLE_QUOTE),
 	[Bracket] = ACTION_TAP_DANCE_DOUBLE(KC_LBRACKET, KC_RBRACKET),
 	[Paren] = ACTION_TAP_DANCE_DOUBLE(KC_LEFT_PAREN, KC_RIGHT_PAREN),
 	[Brace] = ACTION_TAP_DANCE_DOUBLE(KC_LEFT_CURLY_BRACE, KC_RIGHT_CURLY_BRACE),
@@ -47,10 +48,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] =
 (
 	// left hand
 	LOCKSCR,		KC_F1,      KC_F2,   	KC_F3,		KC_F4,   	KC_F5,	KC_F11,
-	LCTL_T(KC_GRV),	KC_QUOT,    KC_COMM,	KC_DOT,		KC_P,   	KC_Y,   LCAG(KC_F13),
+	LCTL_T(KC_GRV),	TD(Quote),  KC_COMM,	KC_DOT,		KC_P,   	KC_Y,   LCAG(KC_F13),
 	LGUI_T(KC_ESC),	KC_A,       KC_O,		KC_E,		KC_U,   	KC_I,
 	OSM(MOD_LSFT),	TD(Colon),	KC_Q,   	KC_J,		KC_K,   	KC_X,   HYPR(KC_F13),
-	KC_LALT,		KC_HYPR,    KC_SUPR,	TT(Arrows),	SYM_TAB,
+	KC_LALT,		KC_HYPR,    KC_SUPR,	_______,	SYM_TAB,
 
 				KC_LEFT,	KC_RGHT,
 							KC_F16,
@@ -74,7 +75,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] =
 	SHUTDOWN,		KC_F1,		KC_F2,			KC_F3,		KC_F4,		KC_F5,		LGUI(KC_F11),
 	KC_TILD,		KC_EXLM,	KC_AT,			KC_HASH,	KC_DLR,		KC_PERC,	_______,
 	_______,		KC_EQL,		TD(Bracket),	TD(Paren),	TD(Brace),	KC_PLUS,
-	_______,		KC_SCLN,	_______,		_______,	_______,	KC_BSLS,	_______,
+	_______,		KC_SCLN,	_______,		KC_DOWN,	KC_UP,		KC_BSLS,	_______,
 	_______,		_______,	_______,		_______,	_______,
 
 						_______,		_______,
@@ -141,31 +142,6 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] =
 	_______,	_______,
 	_______,
 	_______,	MEH(KC_SPC),	_______
-),
-
-[Arrows] = LAYOUT_ergodox
-(
-   	// left hand
-	_______,	_______,	_______,	_______,	_______,	_______,	_______,
-	_______,	_______,	_______,	_______,	_______,	_______,	_______,
-	_______,	_______,	_______,	_______,	_______,	_______,
-	_______,	_______,	_______,	_______,	_______,	_______,	_______,
-	_______,	_______,	_______,	_______,	_______,
-
-				_______,	_______,
-							_______,
-	_______,	_______,	_______,
-
-	// right hand
-	_______,	_______,	_______,		_______,		_______,		_______,		_______,
-	_______,	_______,	RCTL(KC_LEFT),	RCTL(KC_DOWN),	RCTL(KC_UP),	RCTL(KC_RGHT),	_______,
-				_______,	RGUI(KC_LEFT),	RGUI(KC_DOWN),	RGUI(KC_UP),	RGUI(KC_RGHT),	_______,
-	_______,	_______,	RSFT(KC_LEFT),	RSFT(KC_DOWN),	RSFT(KC_UP),	RSFT(KC_RGHT),	_______,
-							_______,		_______,		_______,		_______,		_______,
-
-	_______,	_______,
-	_______,
-	_______,	_______,	_______
 )
 };
 
@@ -188,20 +164,13 @@ bool process_record_user (uint16_t keycode, keyrecord_t *record)
 // Runs constantly in the background, in a loop.
 void matrix_scan_user(void) 
 {
-	// One Shot Modifiers LEDs
-	bool isShiftOn = keyboard_report->mods & MOD_BIT(KC_LSFT)
-			|| ((get_oneshot_mods() & MOD_BIT(KC_LSFT)) && !has_oneshot_mods_timed_out()) 
-			|| keyboard_report->mods & MOD_BIT(KC_RSFT)
-			|| ((get_oneshot_mods() & MOD_BIT(KC_RSFT)) && !has_oneshot_mods_timed_out());
-
-	bool isRedLedOn = curLayer == Arrows;
+	bool isRedLedOn = curLayer == Numpad;
 
 	bool isGreenLedOn = curLayer == SymbolsL
 		|| curLayer == SymbolsR;
 
 	bool isBlueLedOn = leading
-		|| isShiftOn
-		|| curLayer == Numpad;
+		|| isShiftOn;
 
 	toggleLed(isRedLedOn, LedColorRed);
 	toggleLed(isGreenLedOn, LedColorGreen);
@@ -213,6 +182,7 @@ void matrix_scan_user(void)
 	if (!leading)
 		return;
 
+	// Used: . <ent> <spc> a b c d e f g h 	 j k   m   p   r s t u v w x   
 	bindFirstSequence(KC_DOT, repeat())
 
 	// w: ⌥ →	 b: ⌥ ←	 ga: ⌘ →	 gz: ⌘ ←
@@ -254,14 +224,14 @@ void matrix_scan_user(void)
 	bindSequenceTwo(KC_U, KC_T, tap(LCAG(KC_F11)))
 	bindSequenceTwo(KC_U, KC_P, tap(LCAG(KC_F10)))
 
-	// Apps: f-firefox v-vimr <spc>-iterm um-messages ux-xcode ui-itunes ud-todoist uo-moom us-spotlight ur-transmission uc-chrome uw-whatsapp
+	// Apps: f-firefox v-vimr <spc>-iterm um-messages x-xcode ui-itunes ud-todoist uo-moom us-spotlight ur-transmission uc-chrome uw-whatsapp
 	bindSequence(KC_F, tap(MEH(KC_F1)))
 	bindSequence(KC_V, tap(MEH(KC_F2)))
 	bindSequence(KC_SPC, tap(MEH(KC_F3)))
 	bindSequenceTwo(KC_U, KC_S, tap(G(KC_SPC)))
 	bindSequenceTwo(KC_U, KC_O, tap(G(A(KC_SPC))))
 	bindSequenceTwo(KC_U, KC_M, tap(LCAG(KC_F1)))
-	bindSequenceTwo(KC_U, KC_X, tap(LCAG(KC_F2)))
+	bindSequence(KC_X, tap(LCAG(KC_F2)))
 	bindSequenceTwo(KC_U, KC_I, tap(LCAG(KC_F3)))
 	bindSequenceTwo(KC_U, KC_D, tap(LCAG(KC_F4)))
 	bindSequenceTwo(KC_U, KC_R, tap(LCAG(KC_F5)))
@@ -317,12 +287,12 @@ void matrix_scan_user(void)
 	bindSequenceTwoTwo(KC_C, KC_Y, tap(G(KC_A)), tap(G(KC_C)))
 	bindSequenceTwoTwo(KC_C, KC_P, tap(G(KC_A)), tap(G(KC_V)))
 
-	// cTrl combos: r-tab tj/tk/th/ts-arrows
-	bindSequence(KC_R, tap(C(KC_TAB)))
-	bindSequenceTwo(KC_T, KC_J, tap(C(KC_DOWN)))
-	bindSequenceTwo(KC_T, KC_K, tap(C(KC_UP)))
-	bindSequenceTwo(KC_T, KC_H, tap(C(KC_LEFT)))
-	bindSequenceTwo(KC_T, KC_S, tap(C(KC_RGHT)))
+	// ctRl combos: r-tab tj/tk/th/ts-arrows
+	bindSequenceTwo(KC_R, KC_T, tap(C(KC_TAB)))
+	bindSequenceTwo(KC_R, KC_J, tap(C(KC_DOWN)))
+	bindSequenceTwo(KC_R, KC_K, tap(C(KC_UP)))
+	bindSequenceTwo(KC_R, KC_H, tap(C(KC_LEFT)))
+	bindSequenceTwo(KC_R, KC_S, tap(C(KC_RGHT)))
 
 	// Media: mp-play mn-next mr-previous mj-volDown mk-volUp mm-mute
 	bindSequenceTwo(KC_M, KC_P, tap(KC_MPLY))
