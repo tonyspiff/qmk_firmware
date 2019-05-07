@@ -11,8 +11,7 @@
 enum Layer
 {
 	Base = 0,
-	SymbolsL,
-	SymbolsR,
+	Symbols,
 	Numpad
 };
 
@@ -28,8 +27,8 @@ enum TapDance
 
 #define SHUTDOWN LCAG(KC_EJCT)
 #define LOCKSCR RCTL(RSFT(KC_PWR))
-#define SYM_TAB LT(SymbolsR, KC_TAB)
-#define SYM_ENT LT(SymbolsL, KC_ENT)
+#define SYM_TAB LT(Symbols, KC_TAB)
+#define SYM_ENT LT(Symbols, KC_ENT)
 #define NUM_F13 LT(Numpad, KC_F13)
 
 qk_tap_dance_action_t tap_dance_actions[] =
@@ -69,10 +68,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] =
 	RCTL(KC_F2),	KC_LEAD,	KC_BSPC
 ),
 
-[SymbolsL] = LAYOUT_ergodox
+[Symbols] = LAYOUT_ergodox
 (
-	// left hand
-	SHUTDOWN,		KC_F1,		KC_F2,			KC_F3,		KC_F4,		KC_F5,		LGUI(KC_F11),
+	// Left Hand
+	SHUTDOWN,		KC_1,		KC_2,			KC_3,		KC_4,		KC_5,		LGUI(KC_F11),
 	KC_TILD,		KC_EXLM,	KC_AT,			KC_HASH,	KC_DLR,		KC_PERC,	_______,
 	_______,		KC_EQL,		TD(Bracket),	TD(Paren),	TD(Brace),	KC_PLUS,
 	_______,		KC_SCLN,	_______,		KC_DOWN,	KC_UP,		KC_BSLS,	_______,
@@ -82,33 +81,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] =
 										HYPR(KC_F17),
 	LGUI(LALT(KC_SPC)), LGUI(KC_F13),	_______,
 
-	// right hand
-	_______,	_______,	_______,	_______,	_______,	_______,	RESET,
-	_______,	KC_F6,		KC_F7,		KC_F8,		KC_F9,		KC_F10,		_______,
-				KC_6,  		KC_7,   	KC_8,   	KC_9,   	KC_0,   	_______,
-	_______,	_______,	_______,	_______,	_______,	_______,	_______,
-							_______,	_______,	_______,	_______,	_______,
-
-	KC_VOLD,	KC_VOLU,
-	_______,
-	_______,	_______,	_______
-),
-
-[SymbolsR] = LAYOUT_ergodox
-(
-   	// left hand
-	RESET,		_______,	_______,	_______,	_______,	_______,	_______,
-	_______,	KC_F1,		KC_F2,		KC_F3,		KC_F4,		KC_F5,		_______,
-	_______,	KC_1,		KC_2,		KC_3,		KC_4,		KC_5,
-	_______,	_______,	_______,	_______,	_______,	_______,	_______,
-	_______,	_______,	_______,	_______,	_______,
-
-				KC_F14,		KC_F15,
-							_______,
-	_______,	_______,	_______,
-
-	// right hand
-	LGUI(KC_F12),	KC_F6,		KC_F7,		KC_F8,		KC_F9,		KC_F10,		KC_PWR,
+	// Right Hand
+	LGUI(KC_F12),	KC_6,		KC_7,		KC_8,		KC_9,		KC_0,		RESET,
 	HYPR(KC_F18),	KC_CIRC,	KC_AMPR,	KC_ASTR,	KC_LPRN,	KC_RPRN,	_______,
 					KC_QUES,	KC_LEFT,	KC_DOWN,	KC_UP,		KC_RGHT,	_______,
 	_______,		KC_PIPE,	KC_HOME,	KC_PGDN,	KC_PGUP,	KC_END,		_______,
@@ -121,8 +95,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] =
 
 [Numpad] = LAYOUT_ergodox
 (
-   	// left hand
-	_______,	_______,	_______,	_______,	_______,	_______,	_______,
+   	// Left Hand
+	RESET,		_______,	_______,	_______,	_______,	_______,	_______,
 	_______,	_______,	_______,	_______,	_______,	_______,	_______,
 	_______,	_______,	_______,	_______,	_______,	_______,
 	_______,	_______,	_______,	_______,	_______,	_______,	_______,
@@ -132,7 +106,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] =
 							_______,
 	_______,	_______,	_______,
 
-	// right hand
+	// Right Hand
 	_______,	_______,	_______,	_______,	KC_LPRN,	KC_RPRN,	_______,
 	_______,	KC_EQL,		KC_7,		KC_8,		KC_9,		KC_MINS,	KC_SLSH,
 				KC_DOT,  	KC_4,   	KC_5,   	KC_6,   	KC_PLUS,   	KC_ASTR,
@@ -166,8 +140,7 @@ void matrix_scan_user(void)
 {
 	bool isRedLedOn = curLayer == Numpad;
 
-	bool isGreenLedOn = curLayer == SymbolsL
-		|| curLayer == SymbolsR;
+	bool isGreenLedOn = curLayer == Symbols;
 
 	bool isBlueLedOn = leading
 		|| isShiftOn;
