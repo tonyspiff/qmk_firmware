@@ -30,7 +30,8 @@ LEADER_EXTERNS();
 #define bindSequenceTwoTwo(key1, key2, cmd1, cmd2) else bindFirstSequenceTwoTwo(key1, key2, cmd1, cmd2)
 
 void tap(uint16_t code);
-void repeat(void);
+void repeatLastCommand(void);
+void cancelLeading(void);
 
 static uint16_t previousKeycode = 0;
 
@@ -41,12 +42,17 @@ void tap(uint16_t code)
 	leading = false;
 }
 
-void repeat()
+void repeatLastCommand()
 {
 	if (previousKeycode == 0)
 		return;
 
 	tap(previousKeycode);
+}
+
+void cancelLeading()
+{
+	leading = false;
 }
 
 #endif

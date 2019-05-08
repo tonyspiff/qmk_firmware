@@ -155,8 +155,10 @@ void matrix_scan_user(void)
 	if (!leading)
 		return;
 
+	bindFirstSequence(KC_ESC, cancelLeading())
+
 	// Used: . <ent> <spc> a b c d e f g h 	 j k   m   p   r s t u v w x   
-	bindFirstSequence(KC_DOT, repeat())
+	bindSequence(KC_DOT, repeatLastCommand())
 
 	// w: ⌥ →	 b: ⌥ ←	 ga: ⌘ →	 gz: ⌘ ←
 	bindSequence(KC_W, tap(A(KC_RGHT)))
