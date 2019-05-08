@@ -50,7 +50,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] =
 	LCTL_T(KC_GRV),	TD(Quote),  KC_COMM,	KC_DOT,		KC_P,   	KC_Y,   LCAG(KC_F13),
 	LGUI_T(KC_ESC),	KC_A,       KC_O,		KC_E,		KC_U,   	KC_I,
 	OSM(MOD_LSFT),	TD(Colon),	KC_Q,   	KC_J,		KC_K,   	KC_X,   HYPR(KC_F13),
-	KC_LALT,		KC_HYPR,    KC_SUPR,	_______,	SYM_TAB,
+	KC_LALT,		KC_HYPR,    KC_SUPR,	TT(Numpad),	SYM_TAB,
 
 				KC_LEFT,	KC_RGHT,
 							KC_F16,
@@ -61,7 +61,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] =
 	_______,		KC_F,	 	KC_G, 		KC_C,   	KC_R,   	KC_L,		RCTL_T(KC_SLSH),
 					KC_D,   	KC_H, 		KC_T,  		KC_N,   	KC_S,		RGUI_T(KC_MINS),
 	_______,		KC_B,   	KC_M, 		KC_W,   	KC_V,   	KC_Z,		OSM(MOD_RSFT),
-								SYM_ENT,	_______,	KC_SUPR,  	KC_HYPR,	KC_RALT,
+								SYM_ENT,	KC_LEAD,	KC_SUPR,  	KC_HYPR,	KC_RALT,
 
 	KC_MPLY,		KC_MNXT,
 	KC_F16,
