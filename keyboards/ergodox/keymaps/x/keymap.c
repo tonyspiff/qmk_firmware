@@ -7,12 +7,18 @@
 #include "ergodox_leds.h"
 
 #define curLayer (biton32(layer_state))
+#define X_____X KC_NO
 
 enum Layer
 {
 	Base = 0,
+	Inter,
 	Symbols,
-	Numpad
+	Shortcuts,
+	Media,
+	Cmd,
+	Numpad,
+	Arrows
 };
 
 enum TapDance
@@ -25,9 +31,18 @@ enum TapDance
 	Tilde
 };
 
+enum Keycode
+{
+	KC_DOTSPC = SAFE_RANGE,
+	KC_ELIP,
+	KC_DOTENT,
+	KC_COPYALL,
+	KC_PASTEALL
+};
+
 #define SHUTDOWN LCAG(KC_EJCT)
 #define LOCKSCR RCTL(RSFT(KC_PWR))
-#define SYM_TAB LT(Symbols, KC_TAB)
+#define SYM_TAB LT(Arrows, KC_TAB)
 #define SYM_ENT LT(Symbols, KC_ENT)
 #define NUM_F13 LT(Numpad, KC_F13)
 
@@ -46,56 +61,107 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] =
 [Base] = LAYOUT_ergodox
 (
 	// left hand
-	LOCKSCR,		KC_F1,      KC_F2,   	KC_F3,		KC_F4,   	KC_F5,	KC_F11,
-	LCTL_T(KC_GRV),	TD(Quote),  KC_COMM,	KC_DOT,		KC_P,   	KC_Y,   LCAG(KC_F13),
+	LOCKSCR,		KC_F1,      KC_F2,   	NUM_F13,	KC_F4,   	KC_F5,	KC_F11,
+	LCTL_T(KC_GRV),	TD(Quote),  KC_COMM,	OSL(Inter),	KC_P,   	KC_Y,   LCAG(KC_F13),
 	LGUI_T(KC_ESC),	KC_A,       KC_O,		KC_E,		KC_U,   	KC_I,
 	OSM(MOD_LSFT),	TD(Colon),	KC_Q,   	KC_J,		KC_K,   	KC_X,   HYPR(KC_F13),
-	KC_LALT,		KC_HYPR,    KC_SUPR,	TT(Numpad),	SYM_TAB,
+	KC_LALT,		KC_HYPR,    KC_SUPR,	KC_LEAD,	SYM_TAB,
 
 				KC_LEFT,	KC_RGHT,
 							KC_F16,
-	KC_SPC,		NUM_F13,	MEH(KC_SPC),
+	LT(Numpad, KC_SPC),	NUM_F13,	MEH(KC_SPC),
 
 	// right hand
-	KC_F12,			KC_F6, 		KC_F7, 		KC_F8,   	KC_F9,   	KC_F10,   	KC_CAPS,
-	_______,		KC_F,	 	KC_G, 		KC_C,   	KC_R,   	KC_L,		RCTL_T(KC_SLSH),
+	KC_F12,			KC_F6, 		KC_F7, 		KC_LEAD,   	KC_F9,   	KC_F10,   	KC_CAPS,
+	G(KC_Y),		KC_F,	 	KC_G, 		KC_C,		KC_R,   	KC_L,		RCTL_T(KC_SLSH),
 					KC_D,   	KC_H, 		KC_T,  		KC_N,   	KC_S,		RGUI_T(KC_MINS),
-	_______,		KC_B,   	KC_M, 		KC_W,   	KC_V,   	KC_Z,		OSM(MOD_RSFT),
+	G(KC_TAB),		KC_B,   	KC_M, 		KC_W,   	KC_V,   	KC_Z,		OSM(MOD_RSFT),
 								SYM_ENT,	KC_LEAD,	KC_SUPR,  	KC_HYPR,	KC_RALT,
 
 	KC_MPLY,		KC_MNXT,
 	KC_F16,
-	RCTL(KC_F2),	KC_LEAD,	KC_BSPC
+	RCTL(KC_F2),	_______,	KC_BSPC
+),
+
+[Inter] = LAYOUT_ergodox
+(
+	// Left Hand
+	X_____X,	X_____X,	X_____X,	X_____X,	X_____X,	X_____X,	X_____X,
+	X_____X,	X_____X,	X_____X,	KC_DOT, 	MEH(KC_F3),	X_____X,	X_____X,
+	TO(Base),	X_____X,	X_____X,	X_____X,	KC_F13,		X_____X,
+	X_____X,	X_____X,	X_____X,	X_____X,	X_____X,	X_____X,	X_____X,
+	X_____X,	X_____X,	X_____X,	X_____X,	X_____X,
+
+				X_____X,	X_____X,
+							X_____X,
+	KC_DOTSPC,	X_____X,	X_____X,
+
+	// Right Hand
+	X_____X,	X_____X,	X_____X,	X_____X,	X_____X,	X_____X,	SHUTDOWN,
+	X_____X,	X_____X,	X_____X,	OSL(Cmd),	X_____X,	X_____X,	X_____X,
+				X_____X,OSL(Symbols),OSL(Shortcuts),X_____X,	X_____X,	X_____X,
+	X_____X,	X_____X,	X_____X,	X_____X,	X_____X,	X_____X,	X_____X,
+							X_____X,	X_____X,	X_____X,	X_____X,	X_____X,
+
+	X_____X,	X_____X,
+	X_____X,
+	X_____X,	MEH(KC_SPC),	KC_LEAD
 ),
 
 [Symbols] = LAYOUT_ergodox
 (
 	// Left Hand
-	SHUTDOWN,		KC_1,		KC_2,			KC_3,		KC_4,		KC_5,		LGUI(KC_F11),
-	KC_TILD,		KC_EXLM,	KC_AT,			KC_HASH,	KC_DLR,		KC_PERC,	_______,
-	_______,		KC_EQL,		TD(Bracket),	TD(Paren),	TD(Brace),	KC_PLUS,
-	_______,		KC_SCLN,	_______,		KC_DOWN,	KC_UP,		KC_BSLS,	_______,
-	_______,		_______,	_______,		_______,	_______,
+	X_____X,	X_____X,	X_____X,	X_____X,	X_____X,	X_____X,	X_____X,
+	X_____X,	KC_DQUO,	KC_LT,		KC_ELIP,	KC_LPRN,	KC_RPRN,	X_____X,
+	_______,	KC_ASTR,	KC_0,		KC_EQL,		KC_PLUS,	KC_1,
+	X_____X,	KC_SCLN,	KC_QUES,	KC_DOWN,	KC_UP,		KC_EXLM,	X_____X,
+	X_____X,	X_____X,	X_____X,	X_____X,	X_____X,
 
-						_______,		_______,
-										HYPR(KC_F17),
-	LGUI(LALT(KC_SPC)), LGUI(KC_F13),	_______,
+				X_____X,	X_____X,
+							X_____X,
+	KC_DOTSPC,	X_____X,	X_____X,
 
 	// Right Hand
-	LGUI(KC_F12),	KC_6,		KC_7,		KC_8,		KC_9,		KC_0,		RESET,
-	HYPR(KC_F18),	KC_CIRC,	KC_AMPR,	KC_ASTR,	KC_LPRN,	KC_RPRN,	_______,
-					KC_QUES,	KC_LEFT,	KC_DOWN,	KC_UP,		KC_RGHT,	_______,
-	_______,		KC_PIPE,	KC_HOME,	KC_PGDN,	KC_PGUP,	KC_END,		_______,
-								_______,	_______,	_______,	_______,	_______,
+	X_____X,	X_____X,	X_____X,	X_____X,	X_____X,	X_____X,	RESET,
+	X_____X,	KC_CIRC,	KC_AT,		KC_LCBR,	KC_PERC,	KC_RCBR,	X_____X,
+				KC_DLR,		KC_HASH,	KC_TILD,	X_____X,	KC_BSLS,	X_____X,
+	X_____X,	KC_LBRC,	KC_AMPR,	X_____X,	KC_PIPE,	KC_RBRC,	X_____X,
+							KC_DOTENT,	X_____X,	X_____X,	X_____X,	X_____X,
 
-	KC_MUTE,		KC_MPRV,
-	HYPR(KC_F16),
-	_______,		LGUI(KC_F),	KC_DEL
+	X_____X,	X_____X,
+	X_____X,
+	X_____X,	X_____X,	X_____X
 ),
+
+[Shortcuts] = LAYOUT_ergodox
+(
+	// Left Hand
+	X_____X,	X_____X,	X_____X,	X_____X,	X_____X,	X_____X,	X_____X,
+	X_____X,	X_____X,	HYPR(KC_F2),MEH(KC_F3),	MEH(KC_F12),X_____X,	X_____X,
+	_______,	KC_F13,		HYPR(KC_F4),KC_F13,		X_____X,	HYPR(KC_F3),
+	X_____X,	HYPR(KC_F2),X_____X,	X_____X,	X_____X,	LCAG(KC_F2),X_____X,
+	X_____X,	X_____X,	X_____X,	X_____X,	X_____X,
+
+				X_____X,	X_____X,
+							X_____X,
+	KC_DOTSPC,	X_____X,	X_____X,
+
+	// Right Hand
+	X_____X,	X_____X,	X_____X,	X_____X,	X_____X,	X_____X,	MEH(KC_F11),
+	X_____X,	HYPR(KC_F1),X_____X,	X_____X,	X_____X,	MEH(KC_F4),	X_____X,
+				LCAG(KC_F11),MEH(KC_F1),G(KC_TAB), 	X_____X,  	G(KC_SPC), 	X_____X,
+	X_____X,	X_____X,	LCAG(KC_F1),X_____X,	MEH(KC_F2),	X_____X,	X_____X,
+							X_____X,	X_____X,	X_____X,	X_____X,	X_____X,
+
+	X_____X,	X_____X,
+	X_____X,
+	X_____X,	MEH(KC_SPC),	X_____X
+),
+
 
 [Numpad] = LAYOUT_ergodox
 (
-   	// Left Hand
+	// Left Hand
 	RESET,		_______,	_______,	_______,	_______,	_______,	_______,
 	_______,	_______,	_______,	_______,	_______,	_______,	_______,
 	_______,	_______,	_______,	_______,	_______,	_______,
@@ -116,7 +182,82 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] =
 	_______,	_______,
 	_______,
 	_______,	MEH(KC_SPC),	_______
+),
+
+[Arrows] = LAYOUT_ergodox
+(
+	// Left Hand
+	RESET,		_______,	_______,	_______,	_______,	_______,	_______,
+	_______,	_______,	_______,	_______,	_______,	_______,	_______,
+	_______,	_______,	_______,	_______,	_______,	_______,
+	_______,	_______,	_______,	_______,	_______,	_______,	_______,
+	_______,	_______,	_______,	_______,	_______,
+
+				_______,	_______,
+							_______,
+	_______,	_______,	_______,
+
+	// Right Hand
+	_______,	_______,	_______,	_______,	_______,	_______,	RESET,
+	_______,	_______,	_______,	_______,	_______,	_______,	_______,
+				_______,  	KC_LEFT,   	KC_DOWN,   	KC_UP,   	KC_RGHT,   	_______,
+	_______,	_______,	_______,	_______,	_______,	_______,	_______,
+							_______,	_______,	_______,	_______,	_______,
+
+	_______,	_______,
+	_______,
+	_______,	_______,	_______
+),
+
+[Cmd] = LAYOUT_ergodox
+(
+	// Left Hand
+	_______,	_______,	_______,	_______,	_______,	_______,	_______,
+	_______,	_______,	_______,	_______,	KC_PASTEALL,KC_COPYALL,	_______,
+	_______,	_______,	_______,	_______,	_______,	_______,
+	_______,	_______,	_______,	_______,	_______,	_______,	_______,
+	_______,	_______,	_______,	_______,	_______,
+
+				_______,	_______,
+							_______,
+	_______,	_______,	_______,
+
+	// Right Hand
+	_______,	_______,	_______,	_______,	_______,	_______,	_______,
+	_______,	_______,	_______,	G(KC_GRV),	_______,	_______,	_______,
+				_______,	_______,	_______,	_______,	_______,	_______,
+	_______,	_______,	_______,	_______,	_______,	_______,	_______,
+							_______,	_______,	_______,	_______,	_______,
+
+	_______,	_______,
+	_______,
+	_______,	_______,	_______
 )
+
+/* [Template] = LAYOUT_ergodox */
+/* ( */
+/*	// Left Hand */
+/* 	_______,	_______,	_______,	_______,	_______,	_______,	_______, */
+/* 	_______,	_______,	_______,	_______,	_______,	_______,	_______, */
+/* 	_______,	_______,	_______,	_______,	_______,	_______, */
+/* 	_______,	_______,	_______,	_______,	_______,	_______,	_______, */
+/* 	_______,	_______,	_______,	_______,	_______, */
+
+/* 				_______,	_______, */
+/* 							_______, */
+/* 	_______,	_______,	_______, */
+
+/* 	// Right Hand */
+/* 	_______,	_______,	_______,	_______,	_______,	_______,	_______, */
+/* 	_______,	_______,	_______,	_______,	_______,	_______,	_______, */
+/* 				_______,	_______,	_______,	_______,	_______,	_______, */
+/* 	_______,	_______,	_______,	_______,	_______,	_______,	_______, */
+/* 							_______,	_______,	_______,	_______,	_______, */
+
+/* 	_______,	_______, */
+/* 	_______, */
+/* 	_______,	_______,	_______ */
+/* ) */
 };
 
 // Called by QMK during key processing before the actual key event is handled.
@@ -124,12 +265,41 @@ bool process_record_user (uint16_t keycode, keyrecord_t *record)
 {
 	if (!record->event.pressed) { return true; }
 
-	if (keycode == KC_ESC
-		&& get_oneshot_mods()
-		&& !has_oneshot_mods_timed_out())
+	switch (keycode)
 	{
-		clear_oneshot_mods();
-		return false;
+		case KC_ESC:
+		{
+			if (get_oneshot_mods()
+				&& !has_oneshot_mods_timed_out())
+			{
+				clear_oneshot_mods();
+				return false;
+			}
+		}
+
+		case KC_DOTSPC:
+			tap(KC_DOT);
+			tap(KC_SPC);
+			break;
+
+		case KC_DOTENT:
+			tap(KC_DOT);
+			tap(KC_ENT);
+			break;
+
+		case KC_ELIP:
+			SEND_STRING("... ");
+			break;
+
+		case KC_COPYALL:
+			tap(G(KC_A));
+			tap(G(KC_C));
+			break;
+
+		case KC_PASTEALL:
+			tap(G(KC_A));
+			tap(G(KC_V));
+			break;
 	}
 
 	return true;
@@ -138,11 +308,15 @@ bool process_record_user (uint16_t keycode, keyrecord_t *record)
 // Runs constantly in the background, in a loop.
 void matrix_scan_user(void) 
 {
-	bool isRedLedOn = curLayer == Numpad;
+	bool isRedLedOn = curLayer == Numpad
+		|| curLayer == Arrows;
 
-	bool isGreenLedOn = curLayer == Symbols;
+	bool isGreenLedOn = curLayer == Inter
+		|| curLayer == Shortcuts
+		|| curLayer == Symbols;
 
 	bool isBlueLedOn = leading
+		|| curLayer == Cmd
 		|| isShiftOn;
 
 	toggleLed(isRedLedOn, LedColorRed);
@@ -214,31 +388,31 @@ void matrix_scan_user(void)
 	bindSequenceTwo(KC_U, KC_W, tap(LCAG(KC_F7)))
 
 	// Arrows
-	bindSequence(KC_J, tap(KC_DOWN))
-	bindSequence(KC_K, tap(KC_UP))
-	bindSequence(KC_H, tap(KC_LEFT))
-	bindSequence(KC_S, tap(KC_RGHT))
+	/* bindSequence(KC_J, tap(KC_DOWN)) */
+	/* bindSequence(KC_K, tap(KC_UP)) */
+	/* bindSequence(KC_H, tap(KC_LEFT)) */
+	/* bindSequence(KC_S, tap(KC_RGHT)) */
 
 	// Emblems (symbols and punctuation)
 	// . : " ( / , { * = + $ < ! ? # ~ & > [ - ' ` % ; ) } ] _ @ \ ^ 
 	//       p s   c a e u d   x q h t m   b       r           g k f
-	bindSequenceTwo(KC_E, KC_P, tap(KC_LEFT_PAREN))
-	bindSequenceTwo(KC_E, KC_S, tap(KC_SLSH))
-	bindSequenceTwo(KC_E, KC_C, tap(KC_LEFT_CURLY_BRACE))
-	bindSequenceTwo(KC_E, KC_A, tap(KC_ASTR))
-	bindSequenceTwo(KC_E, KC_E, tap(KC_EQL))
-	bindSequenceTwo(KC_E, KC_U, tap(KC_PLUS))
-	bindSequenceTwo(KC_E, KC_D, tap(KC_DLR))
-	bindSequenceTwo(KC_E, KC_X, tap(KC_EXLM))
-	bindSequenceTwo(KC_E, KC_Q, tap(KC_QUES))
-	bindSequenceTwo(KC_E, KC_H, tap(KC_HASH))
-	bindSequenceTwo(KC_E, KC_T, tap(KC_TILDE))
-	bindSequenceTwo(KC_E, KC_M, tap(KC_AMPR))
-	bindSequenceTwo(KC_E, KC_B, tap(KC_LBRACKET))
-	bindSequenceTwo(KC_E, KC_R, tap(KC_PERC))
-	bindSequenceTwo(KC_E, KC_G, tap(KC_AT))
-	bindSequenceTwo(KC_E, KC_K, tap(KC_BSLS))
-	bindSequenceTwo(KC_E, KC_F, tap(KC_CIRC))
+	/* bindSequenceTwo(KC_E, KC_P, tap(KC_LEFT_PAREN)) */
+	/* bindSequenceTwo(KC_E, KC_S, tap(KC_SLSH)) */
+	/* bindSequenceTwo(KC_E, KC_C, tap(KC_LEFT_CURLY_BRACE)) */
+	/* bindSequenceTwo(KC_E, KC_A, tap(KC_ASTR)) */
+	/* bindSequenceTwo(KC_E, KC_E, tap(KC_EQL)) */
+	/* bindSequenceTwo(KC_E, KC_U, tap(KC_PLUS)) */
+	/* bindSequenceTwo(KC_E, KC_D, tap(KC_DLR)) */
+	/* bindSequenceTwo(KC_E, KC_X, tap(KC_EXLM)) */
+	/* bindSequenceTwo(KC_E, KC_Q, tap(KC_QUES)) */
+	/* bindSequenceTwo(KC_E, KC_H, tap(KC_HASH)) */
+	/* bindSequenceTwo(KC_E, KC_T, tap(KC_TILDE)) */
+	/* bindSequenceTwo(KC_E, KC_M, tap(KC_AMPR)) */
+	/* bindSequenceTwo(KC_E, KC_B, tap(KC_LBRACKET)) */
+	/* bindSequenceTwo(KC_E, KC_R, tap(KC_PERC)) */
+	/* bindSequenceTwo(KC_E, KC_G, tap(KC_AT)) */
+	/* bindSequenceTwo(KC_E, KC_K, tap(KC_BSLS)) */
+	/* bindSequenceTwo(KC_E, KC_F, tap(KC_CIRC)) */
 
 	// Alfred: af-alfred-files am-alfred-menu ai-alfred-itunes
 	bindSequenceTwo(KC_A, KC_F, tap(HYPR(KC_F1)))
