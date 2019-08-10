@@ -44,6 +44,17 @@ void tap(uint16_t code)
 	leading = false;
 }
 
+#if defined(UNICODE_ENABLE)
+void tapUnicode(uint16_t code);
+void tapUnicode(uint16_t code)
+{
+	unicode_input_start();
+	register_hex(code);
+	unicode_input_finish();
+	leading = false;
+}
+#endif
+
 void repeatLastCommand()
 {
 	if (previousKeycode == 0)
