@@ -53,7 +53,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] =
 (
 	// left hand
 	LOCKSCR,		KC_F1,      KC_F2,   	KC_F3,		KC_F4,   	KC_F5,	KC_F11,
-	LCTL_T(KC_GRV),	TD(Quote),  KC_COMM,	KC_LEAD,	KC_P,   	KC_Y,   LCAG(KC_F13),
+	LCTL_T(KC_GRV),	KC_QUOTE,	KC_COMM,	KC_LEAD,	KC_P,   	KC_Y,   LCAG(KC_F13),
 	LGUI_T(KC_ESC),	KC_A,       KC_O,		KC_E,		KC_U,   	KC_I,
 	OSM(MOD_LSFT),	TD(Colon),	KC_Q,   	KC_J,		KC_K,   	KC_X,   HYPR(KC_F13),
 	KC_LALT,		KC_HYPR,    KC_SUPR,	KC_LEAD,	SYM_TAB,
@@ -149,6 +149,13 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] =
 /* 	_______,	_______,	_______ */
 /* ) */
 };
+
+#if defined(UNICODE_ENABLE)
+void eeconfig_init_user(void)
+{
+	set_unicode_input_mode(UC_OSX);
+}
+#endif
 
 // Called by QMK during key processing before the actual key event is handled.
 bool process_record_user (uint16_t keycode, keyrecord_t *record) 
@@ -325,6 +332,24 @@ void matrix_scan_user(void)
 	/* bindSequence(KC_K, tap(KC_UP)) */
 	/* bindSequence(KC_H, tap(KC_LEFT)) */
 	/* bindSequence(KC_S, tap(KC_RGHT)) */
+
+#if defined(UNICODE_ENABLE)
+	// Unicode, Accented characters
+	bindSequenceTwo(KC_QUOTE, KC_C, tapUnicode(0x00E7))
+	bindSequenceTwo(KC_QUOTE, KC_A, tapUnicode(0x00E1))
+	bindSequenceTwo(KC_QUOTE, KC_E, tapUnicode(0x00E9))
+	bindSequenceTwo(KC_QUOTE, KC_I, tapUnicode(0x00ED))
+	bindSequenceTwo(KC_QUOTE, KC_O, tapUnicode(0x00F3))
+	bindSequenceTwo(KC_QUOTE, KC_U, tapUnicode(0x00FA))
+	bindSequenceTwo(KC_GRAVE, KC_A, tapUnicode(0x00E0))
+	bindSequenceTwo(KC_TILDE, KC_A, tapUnicode(0x00E3))
+	bindSequenceTwo(KC_TILDE, KC_O, tapUnicode(0x00F5))
+	bindSequenceTwo(KC_TILDE, KC_N, tapUnicode(0x00F1))
+	bindSequenceTwo(KC_F, KC_A, tapUnicode(0x00E2))
+	bindSequenceTwo(KC_F, KC_E, tapUnicode(0x00EA))
+	bindSequenceTwo(KC_F, KC_O, tapUnicode(0x00F4))
+	bindSequenceTwo(KC_F, KC_U, tapUnicode(0x00FC))
+#endif
 
 	if (timer_elapsed(leader_time) > LEADER_TIMEOUT)
 		leading = false;
