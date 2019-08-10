@@ -20,6 +20,7 @@ LEADER_EXTERNS();
 #define bindFirstSequenceThree(key1, key2, key3, cmd) if (leader_sequence[0] == (key1) && leader_sequence[1] == (key2) && leader_sequence[2] == (key3)) { cmd; }
 #define bindFirstSequenceFour(key1, key2, key3, key4, cmd) if (leader_sequence[0] == (key1) && leader_sequence[1] == (key2) && leader_sequence[2] == (key3) && leader_sequence[3] == (key4)) { cmd; }
 #define bindFirstSequenceFive(key1, key2, key3, key4, key5, cmd) if (leader_sequence[0] == (key1) && leader_sequence[1] == (key2) && leader_sequence[2] == (key3) && leader_sequence[3] == (key4) && leader_sequence[4] == (key5)) { cmd; }
+#define bindFirstSequenceOneTwo(key, cmd1, cmd2) if (leader_sequence[0] == (key)) { cmd1; cmd2; }
 #define bindFirstSequenceTwoTwo(key1, key2, cmd1, cmd2) if (leader_sequence[0] == (key1) && leader_sequence[1] == (key2)) { cmd1; cmd2; }
 
 #define bindSequence(key, cmd) else bindFirstSequence(key, cmd)
@@ -27,6 +28,7 @@ LEADER_EXTERNS();
 #define bindSequenceThree(key1, key2, key3, cmd) else bindFirstSequenceThree(key1, key2, key3, cmd)
 #define bindSequenceFour(key1, key2, key3, key4, cmd) else bindFirstSequenceFour(key1, key2, key3, key4, cmd)
 #define bindSequenceFive(key1, key2, key3, key4, key5, cmd) else bindFirstSequenceFive(key1, key2, key3, key4, key5, cmd)
+#define bindSequenceOneTwo(key, cmd1, cmd2) else bindFirstSequenceOneTwo(key, cmd1, cmd2)
 #define bindSequenceTwoTwo(key1, key2, cmd1, cmd2) else bindFirstSequenceTwoTwo(key1, key2, cmd1, cmd2)
 
 void tap(uint16_t code);
