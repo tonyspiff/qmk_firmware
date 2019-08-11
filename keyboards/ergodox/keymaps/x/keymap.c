@@ -12,7 +12,6 @@
 enum Layer
 {
 	Base = 0,
-	Media,
 	Numpad,
 	Arrows
 };
@@ -79,7 +78,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] =
 	// Left Hand
 	RESET,		_______,	_______,	_______,	_______,	_______,	_______,
 	_______,	_______,	_______,	_______,	_______,	_______,	_______,
-	_______,	_______,	_______,	_______,	_______,	_______,
+	TO(Base),	_______,	_______,	_______,	_______,	_______,
 	_______,	_______,	_______,	_______,	_______,	_______,	_______,
 	_______,	_______,	_______,	_______,	_______,
 
@@ -104,8 +103,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] =
 	// Left Hand
 	RESET,		_______,	_______,	_______,	_______,	_______,	_______,
 	_______,	_______,	_______,	_______,	_______,	_______,	_______,
-	_______,	_______,	_______,	_______,	_______,	_______,
-	_______,	_______,	_______,	_______,	_______,	_______,	_______,
+	TO(Base),	_______,	_______,	_______,	_______,	_______,
+	_______,	_______,	_______,	KC_DOWN,   	KC_UP,		_______,	_______,
 	_______,	_______,	_______,	_______,	_______,
 
 				_______,	_______,
@@ -115,7 +114,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] =
 	// Right Hand
 	_______,	_______,	_______,	_______,	_______,	_______,	RESET,
 	_______,	_______,	_______,	_______,	_______,	_______,	_______,
-				_______,  	KC_LEFT,   	KC_DOWN,   	KC_UP,   	KC_RGHT,   	_______,
+				_______,  	KC_LEFT,   	KC_DOWN,   	KC_UP,   	KC_RGHT,	_______,
 	_______,	_______,	_______,	_______,	_______,	_______,	_______,
 							_______,	_______,	_______,	_______,	_______,
 
@@ -200,6 +199,8 @@ void matrix_scan_user(void)
 	bindSequenceTwo(KC_H, KC_LEAD, repeatLastCommand())
 	bindSequence(KC_LEAD, tap(KC_DOT))
 	bindSequence(KC_P, tap(MEH(KC_F3)))
+	bindSequenceOneTwo(KC_N, layer_on(Numpad), cancelLeading())
+	bindSequenceOneTwo(KC_W, layer_on(Arrows), cancelLeading())
 	bindSequence(KC_U, tap(KC_F13))
 	bindSequence(KC_O, tap(G(A(KC_SPC))))
 	bindSequenceOneTwo(KC_SPC, tap(KC_DOT), tap(KC_SPC))
@@ -235,6 +236,7 @@ void matrix_scan_user(void)
 	bindSequenceTwo(KC_H, KC_Q, tap(KC_QUES))
 	bindSequenceTwo(KC_H, KC_J, tap(KC_DOWN))
 	bindSequenceTwo(KC_H, KC_K, tap(KC_UP))
+	bindSequenceTwo(KC_H, KC_X, tap(KC_EXLM))
 	bindSequenceTwo(KC_H, KC_F, tap(KC_CIRC))
 	bindSequenceTwo(KC_H, KC_G, tap(KC_AT))
 	bindSequenceTwo(KC_H, KC_C, tap(KC_LEFT_CURLY_BRACE))
@@ -257,6 +259,7 @@ void matrix_scan_user(void)
 	cmdBind(KC_W)
 	cmdBind(KC_Z)
 	cmdBind(KC_F)
+	cmdBind(KC_S)
 	bindSequenceTwo(KC_C, KC_T, tap(G(KC_GRAVE)))
 	bindSequenceTwoTwo(KC_C, KC_P, tap(G(KC_A)), tap(G(KC_V)))
 	bindSequenceTwoTwo(KC_C, KC_Y, tap(G(KC_A)), tap(G(KC_C)))
@@ -268,12 +271,13 @@ void matrix_scan_user(void)
 	bindSequenceTwo(KC_G, KC_A, tap(G(KC_RGHT)))
 
 	// Cmd + Shift
-#define cmdShiftBind(key) bindSequenceThree(KC_C, KC_S, key, tap(G(S(key))))
+#define cmdShiftBind(key) bindSequenceTwo(KC_L, key, tap(G(S(key))))
 	cmdShiftBind(KC_F)
-	bindSequenceThree(KC_C, KC_S, KC_J, tap(C(KC_DOWN)))
-	bindSequenceThree(KC_C, KC_S, KC_K, tap(C(KC_UP)))
-	bindSequenceThree(KC_C, KC_S, KC_H, tap(C(KC_LEFT)))
-	bindSequenceThree(KC_C, KC_S, KC_S, tap(C(KC_RGHT)))
+	cmdShiftBind(KC_P)
+	bindSequenceTwo(KC_L, KC_J, tap(G(S(KC_DOWN))))
+	bindSequenceTwo(KC_L, KC_K, tap(G(S(KC_UP))))
+	bindSequenceTwo(KC_L, KC_H, tap(G(S(KC_LEFT))))
+	bindSequenceTwo(KC_L, KC_S, tap(G(S(KC_RGHT))))
 
 	// ctRl - combos: rt-tab rj/rk/rh/rs-arrows
 #define ctrlBind(key) bindSequenceTwo(KC_R, key, tap(C(key)))
@@ -297,8 +301,8 @@ void matrix_scan_user(void)
 	bindSequenceTwo(KC_M, KC_M, tap(KC_MUTE))
 
 	// w: ⌥ →	 b: ⌥ ←	 ga: ⌘ →	 gz: ⌘ ←
-	bindSequence(KC_W, tap(A(KC_RGHT)))
-	bindSequence(KC_B, tap(A(KC_LEFT)))
+	/* bindSequence(KC_W, tap(A(KC_RGHT))) */
+	/* bindSequence(KC_B, tap(A(KC_LEFT))) */
 
 	// TODO: Copy content before deleting
 	/* Deletion */
