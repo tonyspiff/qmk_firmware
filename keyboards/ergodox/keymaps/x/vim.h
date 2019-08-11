@@ -15,28 +15,9 @@ LEADER_EXTERNS();
 #define press(keycode) register_code16(keycode)
 #define release(keycode) unregister_code16(keycode)
 
-#define bindFirstSequence(key, cmd) if (leader_sequence[0] == (key)) { cmd; }
-#define bindFirstSequenceTwo(key1, key2, cmd) if (leader_sequence[0] == (key1) && leader_sequence[1] == (key2)) { cmd; }
-#define bindFirstSequenceThree(key1, key2, key3, cmd) if (leader_sequence[0] == (key1) && leader_sequence[1] == (key2) && leader_sequence[2] == (key3)) { cmd; }
-#define bindFirstSequenceFour(key1, key2, key3, key4, cmd) if (leader_sequence[0] == (key1) && leader_sequence[1] == (key2) && leader_sequence[2] == (key3) && leader_sequence[3] == (key4)) { cmd; }
-#define bindFirstSequenceFive(key1, key2, key3, key4, key5, cmd) if (leader_sequence[0] == (key1) && leader_sequence[1] == (key2) && leader_sequence[2] == (key3) && leader_sequence[3] == (key4) && leader_sequence[4] == (key5)) { cmd; }
-#define bindFirstSequenceOneTwo(key, cmd1, cmd2) if (leader_sequence[0] == (key)) { cmd1; cmd2; }
-#define bindFirstSequenceTwoTwo(key1, key2, cmd1, cmd2) if (leader_sequence[0] == (key1) && leader_sequence[1] == (key2)) { cmd1; cmd2; }
-
-#define bindSequence(key, cmd) else bindFirstSequence(key, cmd)
-#define bindSequenceTwo(key1, key2, cmd) else bindFirstSequenceTwo(key1, key2, cmd)
-#define bindSequenceThree(key1, key2, key3, cmd) else bindFirstSequenceThree(key1, key2, key3, cmd)
-#define bindSequenceFour(key1, key2, key3, key4, cmd) else bindFirstSequenceFour(key1, key2, key3, key4, cmd)
-#define bindSequenceFive(key1, key2, key3, key4, key5, cmd) else bindFirstSequenceFive(key1, key2, key3, key4, key5, cmd)
-#define bindSequenceOneTwo(key, cmd1, cmd2) else bindFirstSequenceOneTwo(key, cmd1, cmd2)
-#define bindSequenceTwoTwo(key1, key2, cmd1, cmd2) else bindFirstSequenceTwoTwo(key1, key2, cmd1, cmd2)
-
-void tap(uint16_t code);
-void repeatLastCommand(void);
-void cancelLeading(void);
-
 static uint16_t previousKeycode = 0;
 
+inline void tap(uint16_t code);
 void tap(uint16_t code)
 {
 	previousKeycode = code;
@@ -45,7 +26,7 @@ void tap(uint16_t code)
 }
 
 #if defined(UNICODE_ENABLE)
-void tapUnicode(uint16_t code);
+inline void tapUnicode(uint16_t code);
 void tapUnicode(uint16_t code)
 {
 	unicode_input_start();
@@ -55,17 +36,13 @@ void tapUnicode(uint16_t code)
 }
 #endif
 
+inline void repeatLastCommand(void);
 void repeatLastCommand()
 {
 	if (previousKeycode == 0)
 		return;
 
 	tap(previousKeycode);
-}
-
-void cancelLeading()
-{
-	leading = false;
 }
 
 #endif
