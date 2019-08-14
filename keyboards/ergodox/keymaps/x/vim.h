@@ -36,8 +36,8 @@ void tapUnicode(uint16_t code)
 }
 #endif
 
-inline void repeatLastCommand(void);
-void repeatLastCommand()
+inline void repeatTap(void);
+void repeatTap()
 {
 	if (previousKeycode == 0)
 		return;
