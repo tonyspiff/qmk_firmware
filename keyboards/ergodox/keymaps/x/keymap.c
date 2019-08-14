@@ -8,6 +8,10 @@
 
 #define curLayer (biton32(layer_state))
 #define X_____X KC_NO
+#define KC_CMD KC_LCMD
+#define CMD(kc) LCMD(kc)
+#define KC_OPT KC_LALT
+#define OPT(kc) LALT(kc)
 
 enum Layer
 {
@@ -26,10 +30,10 @@ enum TapDance
 	Tilde
 };
 
-enum Keycode
-{
-	KC_UNUSED = SAFE_RANGE
-};
+/* enum Keycode */
+/* { */
+/* 	KC_UNUSED = SAFE_RANGE */
+/* }; */
 
 #define SHUTDOWN LCAG(KC_EJCT)
 #define LOCKSCR RCTL(RSFT(KC_PWR))
@@ -53,9 +57,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] =
 	// left hand
 	LOCKSCR,		KC_F1,      KC_F2,   	KC_F3,		KC_F4,   	KC_F5,	KC_F11,
 	LCTL_T(KC_GRV),	KC_QUOTE,	KC_COMM,	KC_LEAD,	KC_P,   	KC_Y,   LCAG(KC_F13),
-	LGUI_T(KC_ESC),	KC_A,       KC_O,		KC_E,		KC_U,   	KC_I,
+	KC_ESC,			KC_A,       KC_O,		KC_E,		KC_U,   	KC_I,
 	OSM(MOD_LSFT),	TD(Colon),	KC_Q,   	KC_J,		KC_K,   	KC_X,   HYPR(KC_F13),
-	KC_LALT,		KC_HYPR,    KC_SUPR,	KC_LEAD,	SYM_TAB,
+	KC_LALT,		KC_LCMD,    KC_SUPR,	KC_LEAD,	SYM_TAB,
 
 				KC_LEFT,	KC_RGHT,
 							KC_F16,
@@ -64,9 +68,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] =
 	// right hand
 	KC_F12,			KC_F6, 		KC_F7, 		KC_F8,   	KC_F9,   	KC_F10,   	KC_CAPS,
 	G(KC_Y),		KC_F,	 	KC_G, 		KC_C,		KC_R,   	KC_L,		RCTL_T(KC_SLSH),
-					KC_D,   	KC_H, 		KC_T,  		KC_N,   	KC_S,		RGUI_T(KC_MINS),
+					KC_D,   	KC_H, 		KC_T,  		KC_N,   	KC_S,		KC_MINS,
 	G(KC_TAB),		KC_B,   	KC_M, 		KC_W,   	KC_V,   	KC_Z,		OSM(MOD_RSFT),
-								KC_ENT,		KC_LEAD,	KC_SUPR,  	KC_HYPR,	KC_RALT,
+								KC_ENT,		KC_LEAD,	KC_SUPR,  	KC_RGUI,	KC_RALT,
 
 	KC_MPLY,		KC_MNXT,
 	KC_F16,
@@ -156,6 +160,8 @@ void eeconfig_init_user(void)
 }
 #endif
 
+static bool isCmdTabOn = false;
+
 // Called by QMK during key processing before the actual key event is handled.
 bool process_record_user (uint16_t keycode, keyrecord_t *record) 
 {
@@ -164,14 +170,24 @@ bool process_record_user (uint16_t keycode, keyrecord_t *record)
 	switch (keycode)
 	{
 		case KC_ESC:
-		{
+			if (isCmdTabOn)
+			{
+				release(KC_CMD);
+			}
+
 			if (get_oneshot_mods()
 				&& !has_oneshot_mods_timed_out())
 			{
 				clear_oneshot_mods();
 				return false;
 			}
-		}
+			break;
+
+		case KC_ENT:
+			if (isCmdTabOn)
+			{
+				release(KC_CMD);
+			}
 	}
 
 	return true;
@@ -201,10 +217,10 @@ void matrix_scan_user(void)
 	else if (leader_sequence[0] == KC_N) { layer_on(Numpad); leading = false; }
 	else if (leader_sequence[0] == KC_W) { layer_on(Arrows); leading = false; }
 	else if (leader_sequence[0] == KC_U) { tap(KC_F13); }
-	else if (leader_sequence[0] == KC_O) { tap(G(A(KC_SPC))); }
+	else if (leader_sequence[0] == KC_O) { tap(CMD(OPT(KC_SPC))); }
 	else if (leader_sequence[0] == KC_SPC) { tap(KC_DOT); tap(KC_SPC); }
 	else if (leader_sequence[0] == KC_ENT) { tap(KC_DOT); tap(KC_ENT); }
-	else if (leader_sequence[0] == KC_SLSH) { SEND_STRING("... "); leading = false; }
+	else if (leader_sequence[0] == KC_SLASH) { SEND_STRING("... "); leading = false; }
 
 	// Shortcuts
 	else if (leader_sequence[0] == KC_T) {
@@ -217,75 +233,80 @@ void matrix_scan_user(void)
 		else if (leader_sequence[1] == KC_L) { tap(MEH(KC_F4)); }
 		else if (leader_sequence[1] == KC_D) { tap(LCAG(KC_F11)); }
 		else if (leader_sequence[1] == KC_H) { tap(MEH(KC_F1)); }
-		else if (leader_sequence[1] == KC_T) { tap(G(KC_TAB)); }
-		else if (leader_sequence[1] == KC_S) { tap(G(KC_SPC)); }
+		else if (leader_sequence[1] == KC_T) { tap(CMD(KC_TAB)); }
+		else if (leader_sequence[1] == KC_S) { tap(CMD(KC_SPC)); }
 		else if (leader_sequence[1] == KC_M) { tap(LCAG(KC_F1)); }
 		else if (leader_sequence[1] == KC_V) { tap(MEH(KC_F2)); }
+		else if (leader_sequence[1] == KC_C) { press(KC_CMD); tap(KC_TAB); isCmdTabOn = true; } 
 	}
 
 	// Symbols
 	else if (leader_sequence[0] == KC_H) {
-		if (leader_sequence[1] == KC_LEAD) { repeatLastCommand(); }
+		if (leader_sequence[1] == KC_LEAD) { repeatTap(); }
 		else if (leader_sequence[1] == KC_QUOTE) { tap(KC_DOUBLE_QUOTE); }
 		else if (leader_sequence[1] == KC_COMM) { tap(KC_LT); }
-		else if (leader_sequence[1] == KC_P) { tap(KC_LPRN); }
+		else if (leader_sequence[1] == KC_P) { tap(KC_LPRN); } // Parenthesis
 		else if (leader_sequence[1] == KC_Y) { tap(KC_RPRN); }
-		else if (leader_sequence[1] == KC_A) { tap(KC_ASTR); }
+		else if (leader_sequence[1] == KC_A) { tap(KC_ASTR); } // Asterisk
 		else if (leader_sequence[1] == KC_O) { tap(KC_0); }
-		else if (leader_sequence[1] == KC_E) { tap(KC_EQL); }
-		else if (leader_sequence[1] == KC_U) { tap(KC_PLUS); }
+		else if (leader_sequence[1] == KC_E) { tap(KC_EQL); } // Equal
+		else if (leader_sequence[1] == KC_U) { tap(KC_PLUS); } // plUs
 		else if (leader_sequence[1] == KC_I) { tap(KC_1); }
 		else if (leader_sequence[1] == KC_COLON) { tap(KC_SCOLON); }
-		else if (leader_sequence[1] == KC_Q) { tap(KC_QUES); }
+		else if (leader_sequence[1] == KC_Q) { tap(KC_QUES); } // Question mark
 		else if (leader_sequence[1] == KC_J) { tap(KC_DOWN); }
 		else if (leader_sequence[1] == KC_K) { tap(KC_UP); }
-		else if (leader_sequence[1] == KC_X) { tap(KC_EXLM); }
-		else if (leader_sequence[1] == KC_F) { tap(KC_CIRC); }
-		else if (leader_sequence[1] == KC_G) { tap(KC_AT); }
-		else if (leader_sequence[1] == KC_C) { tap(KC_LEFT_CURLY_BRACE); }
-		else if (leader_sequence[1] == KC_R) { tap(KC_PERC); }
+		else if (leader_sequence[1] == KC_X) { tap(KC_EXLM); } // eXclamation mark
+		else if (leader_sequence[1] == KC_F) { tap(KC_CIRC); } // circumFlex
+		else if (leader_sequence[1] == KC_G) { tap(KC_AT); } // at sigGn
+		else if (leader_sequence[1] == KC_C) { tap(KC_LEFT_CURLY_BRACE); } // Curly brace
+		else if (leader_sequence[1] == KC_R) { tap(KC_PERC); } // peRcent
 		else if (leader_sequence[1] == KC_L) { tap(KC_RIGHT_CURLY_BRACE); }
-		else if (leader_sequence[1] == KC_D) { tap(KC_DLR); }
-		else if (leader_sequence[1] == KC_H) { tap(KC_HASH); }
-		else if (leader_sequence[1] == KC_T) { tap(KC_TILDE); }
-		else if (leader_sequence[1] == KC_S) { tap(KC_BSLS); }
-		else if (leader_sequence[1] == KC_B) { tap(KC_LBRACKET); }
-		else if (leader_sequence[1] == KC_M) { tap(KC_AMPR); }
-		else if (leader_sequence[1] == KC_V) { tap(KC_PIPE); }
+		else if (leader_sequence[1] == KC_D) { tap(KC_DLR); } // Dollar
+		else if (leader_sequence[1] == KC_H) { tap(KC_HASH); } // Hash
+		else if (leader_sequence[1] == KC_T) { tap(KC_TILDE); } // Tilde
+		else if (leader_sequence[1] == KC_S) { tap(KC_BSLS); } // backSlash
+		else if (leader_sequence[1] == KC_B) { tap(KC_LBRACKET); } // Bracket
+		else if (leader_sequence[1] == KC_M) { tap(KC_AMPR); } // aMpersand
+		else if (leader_sequence[1] == KC_V) { tap(KC_PIPE); } // Vertical bar
 		else if (leader_sequence[1] == KC_Z) { tap(KC_RBRACKET); }
 	}
 
 	// Cmd
 	else if (leader_sequence[0] == KC_C) {
-		if (leader_sequence[1] == KC_C) { tap(G(KC_C)); }
-		else if (leader_sequence[1] == KC_V) { tap(G(KC_V)); }
-		else if (leader_sequence[1] == KC_Q) { tap(G(KC_Q)); }
-		else if (leader_sequence[1] == KC_W) { tap(G(KC_W)); }
-		else if (leader_sequence[1] == KC_Z) { tap(G(KC_Z)); }
-		else if (leader_sequence[1] == KC_F) { tap(G(KC_F)); }
-		else if (leader_sequence[1] == KC_S) { tap(G(KC_S)); }
-		else if (leader_sequence[1] == KC_T) { tap(G(KC_GRAVE)); }
-		else if (leader_sequence[1] == KC_P) { tap(G(KC_A)); tap(G(KC_V)); }
-		else if (leader_sequence[1] == KC_Y) { tap(G(KC_A)); tap(G(KC_C)); }
-		else if (leader_sequence[1] == KC_J) { tap(G(KC_DOWN)); }
-		else if (leader_sequence[1] == KC_K) { tap(G(KC_UP)); }
-		else if (leader_sequence[1] == KC_H) { tap(G(KC_LEFT)); }
-		else if (leader_sequence[1] == KC_S) { tap(G(KC_RGHT)); }
+		if (leader_sequence[1] == KC_C) { tap(CMD(KC_C)); }
+		else if (leader_sequence[1] == KC_COMM) { tap(CMD(KC_COMM)); }
+		else if (leader_sequence[1] == KC_SLASH) { tap(CMD(KC_SLASH)); }
+		else if (leader_sequence[1] == KC_V) { tap(CMD(KC_V)); }
+		else if (leader_sequence[1] == KC_A) { tap(CMD(KC_A)); }
+		else if (leader_sequence[1] == KC_Q) { tap(CMD(KC_Q)); }
+		else if (leader_sequence[1] == KC_W) { tap(CMD(KC_W)); }
+		else if (leader_sequence[1] == KC_Z) { tap(CMD(KC_Z)); }
+		else if (leader_sequence[1] == KC_F) { tap(CMD(KC_F)); }
+		else if (leader_sequence[1] == KC_S) { tap(CMD(KC_S)); }
+		else if (leader_sequence[1] == KC_T) { tap(CMD(KC_GRAVE)); }
+		else if (leader_sequence[1] == KC_BSPACE) { tap(CMD(KC_BSPACE)); }
+		else if (leader_sequence[1] == KC_P) { tap(CMD(KC_A)); tap(CMD(KC_V)); }
+		else if (leader_sequence[1] == KC_Y) { tap(CMD(KC_A)); tap(CMD(KC_C)); }
+		else if (leader_sequence[1] == KC_J) { tap(CMD(KC_DOWN)); }
+		else if (leader_sequence[1] == KC_K) { tap(CMD(KC_UP)); }
+		else if (leader_sequence[1] == KC_H) { tap(CMD(KC_LEFT)); }
+		else if (leader_sequence[1] == KC_S) { tap(CMD(KC_RIGHT)); }
 	}
 
 	else if (leader_sequence[0] == KC_G) {
-		if (leader_sequence[1] == KC_Z) { tap(G(KC_LEFT)); }
-		else if (leader_sequence[1] == KC_A) { tap(G(KC_RGHT)); }
+		if (leader_sequence[1] == KC_Z) { tap(CMD(KC_LEFT)); }
+		else if (leader_sequence[1] == KC_A) { tap(CMD(KC_RIGHT)); }
 	}
 
 	// Cmd + Shift
 	else if (leader_sequence[0] == (KC_L)) {
-		if (leader_sequence[1] == KC_F) { tap(G(S(KC_F))); }
-		else if (leader_sequence[1] == KC_P) { tap(G(S(KC_P))); }
-		else if (leader_sequence[1] == KC_J) { tap(G(S(KC_DOWN))); }
-		else if (leader_sequence[1] == KC_K) { tap(G(S(KC_UP))); }
-		else if (leader_sequence[1] == KC_H) { tap(G(S(KC_LEFT))); }
-		else if (leader_sequence[1] == KC_S) { tap(G(S(KC_RGHT))); }
+		if (leader_sequence[1] == KC_F) { tap(CMD(S(KC_F))); }
+		else if (leader_sequence[1] == KC_P) { tap(CMD(S(KC_P))); }
+		else if (leader_sequence[1] == KC_J) { tap(CMD(S(KC_DOWN))); }
+		else if (leader_sequence[1] == KC_K) { tap(CMD(S(KC_UP))); }
+		else if (leader_sequence[1] == KC_H) { tap(CMD(S(KC_LEFT))); }
+		else if (leader_sequence[1] == KC_S) { tap(CMD(S(KC_RIGHT))); }
 	}
 
 	// ctRl - combos: rt-tab rj/rk/rh/rs-arrows
@@ -300,55 +321,55 @@ void matrix_scan_user(void)
 		else if (leader_sequence[1] == KC_J) { tap(C(KC_DOWN)); }
 		else if (leader_sequence[1] == KC_K) { tap(C(KC_UP)); }
 		else if (leader_sequence[1] == KC_H) { tap(C(KC_LEFT)); }
-		else if (leader_sequence[1] == KC_S) { tap(C(KC_RGHT)); }
+		else if (leader_sequence[1] == KC_S) { tap(C(KC_RIGHT)); }
 	}
 
 	// Media: mp-play mn-next mr-previous mj-volDown mk-volUp mm-mute
 	else if (leader_sequence[0] == KC_M) {
-		if (leader_sequence[1] == KC_P) { tap(KC_MPLY); }
-		else if (leader_sequence[1] == KC_N) { tap(KC_MNXT); }
-		else if (leader_sequence[1] == KC_R) { tap(KC_MPRV); }
-		else if (leader_sequence[1] == KC_J) { tap(KC_VOLD); }
-		else if (leader_sequence[1] == KC_K) { tap(KC_VOLU); }
-		else if (leader_sequence[1] == KC_M) { tap(KC_MUTE); }
+		if (leader_sequence[1] == KC_P) { tap(KC_MEDIA_PLAY_PAUSE); }
+		else if (leader_sequence[1] == KC_N) { tap(KC_MEDIA_NEXT_TRACK); }
+		else if (leader_sequence[1] == KC_R) { tap(KC_MEDIA_PREV_TRACK); }
+		else if (leader_sequence[1] == KC_J) { tap(KC_AUDIO_VOL_DOWN); }
+		else if (leader_sequence[1] == KC_K) { tap(KC_AUDIO_VOL_UP); }
+		else if (leader_sequence[1] == KC_M) { tap(KC_AUDIO_MUTE); }
 	}
 
 	// w: ⌥ →	 b: ⌥ ←	 ga: ⌘ →	 gz: ⌘ ←
-	/* else if (leader_sequence[1] == KC_W) { tap(A(KC_RGHT))) */
-	/* else if (leader_sequence[1] == KC_B) { tap(A(KC_LEFT))) */
+	/* else if (leader_sequence[1] == KC_W) { tap(OPT(KC_RIGHT))) */
+	/* else if (leader_sequence[1] == KC_B) { tap(OPT(KC_LEFT))) */
 
 	// TODO: Copy content before deleting
 	/* Deletion */
 	// dw : ⌥ ⌦		 db : ⌥ ⌫ 		dd : ⌘ → then ⌘ ⌫
-	/* else if (leader_sequence[1] == KC_D, KC_W) { tap(A(KC_DEL)); } */
-	/* else if (leader_sequence[1] == KC_D, KC_B) { tap(A(KC_BSPC)); } */
-	/* else if (leader_sequence[1] == KC_D; KC_D) { tap(G(KC_RGHT)), tap(G(KC_BSPC)); } */
+	/* else if (leader_sequence[1] == KC_D, KC_W) { tap(OPT(KC_DEL)); } */
+	/* else if (leader_sequence[1] == KC_D, KC_B) { tap(OPT(KC_BSPC)); } */
+	/* else if (leader_sequence[1] == KC_D; KC_D) { tap(CMD(KC_RIGHT)), tap(CMD(KC_BSPC)); } */
 
 	/* CamelCase navigation */
 	// ,w: ⌃ →		,b: ⌃ ←	,vw: ⌃ ⇧ →		,vb: ⌃ ⇧ ←		,db: ⌃ ⌫ 	,dw: ⌃ ⌦
-	/* bindSequenceTwo(KC_COMM, KC_W, ctrl(KC_RGHT); } */
+	/* bindSequenceTwo(KC_COMM, KC_W, ctrl(KC_RIGHT); } */
 	/* bindSequenceTwo(KC_COMM, KC_B, ctrl(KC_LEFT); } */ 
-	/* bindSequenceTwo(KC_COMM, KC_V) && leader_sequence[2] == (KC_W)) { ctrlShift(KC_RGHT); } */
+	/* bindSequenceTwo(KC_COMM, KC_V) && leader_sequence[2] == (KC_W)) { ctrlShift(KC_RIGHT); } */
 	/* bindSequenceTwo(KC_COMM, KC_V) && leader_sequence[2] == (KC_B)) { ctrlShift(KC_LEFT); } */
 	/* bindSequenceTwo(KC_COMM, KC_D) && leader_sequence[2] == (KC_B)) { ctrl(KC_BSPC); } */
 	/* bindSequenceTwo(KC_COMM, KC_D) && leader_sequence[2] == (KC_W)) { ctrl(KC_DEL); } } */
 
 	// Tabs / Extra
 	// gt: ⌘ ⇧ →	 ge: ⌘ ⇧ ←	 gs: ⌘ ⌃ →	 gh: ⌘ ⌃ ←
-	/* bindSequenceTwo(KC_G, KC_T) { tap(SGUI(KC_RGHT))) */
+	/* bindSequenceTwo(KC_G, KC_T) { tap(SGUI(KC_RIGHT))) */
 	/* bindSequenceTwo(KC_G, KC_E) { tap(SGUI(KC_LEFT))) */
-	/* bindSequenceTwo(KC_G, KC_S) { tap(G(C(KC_RGHT)))) */
-	/* bindSequenceTwo(KC_G, KC_H) { tap(G(C(KC_LEFT)))) */
+	/* bindSequenceTwo(KC_G, KC_S) { tap(CMD(C(KC_RIGHT)))) */
+	/* bindSequenceTwo(KC_G, KC_H) { tap(CMD(C(KC_LEFT)))) */
 
 	// Window / Split / Panel
 	// ⏎ w : ⌘ ]
-	/* bindSequenceTwo(KC_ENT, KC_W) { tap(G(KC_RBRC))) */
+	/* bindSequenceTwo(KC_ENT, KC_W) { tap(CMD(KC_RBRC))) */
 
 	// Arrows
 	/* else if (leader_sequence[1] == KC_J) { tap(KC_DOWN)) */
 	/* else if (leader_sequence[1] == KC_K) { tap(KC_UP)) */
 	/* else if (leader_sequence[1] == KC_H) { tap(KC_LEFT)) */
-	/* else if (leader_sequence[1] == KC_S) { tap(KC_RGHT)) */
+	/* else if (leader_sequence[1] == KC_S) { tap(KC_RIGHT)) */
 
 #if defined(UNICODE_ENABLE)
 	// Unicode, Accented characters
