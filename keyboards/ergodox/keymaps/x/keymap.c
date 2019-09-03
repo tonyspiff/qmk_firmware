@@ -233,6 +233,7 @@ void matrix_scan_user(void)
 		else if (leader_sequence[1] == KC_G) { tap(CMD(KC_GRAVE)); } // ⌘ `
 		else if (leader_sequence[1] == KC_C) { press(KC_CMD); tap(KC_TAB); isCmdTabOn = true; } // Sticky ⌘ ↹
 		else if (leader_sequence[1] == KC_R) { tap(LCAG(KC_F5)); } // tRansmission
+		else if (leader_sequence[1] == KC_D) { tap(LCAG(KC_F4)); } // toDoist
 		else if (leader_sequence[1] == KC_I) { tap(HYPR(KC_F3)); } // iTunes Mini Player - Alfred
 		else if (leader_sequence[1] == KC_S) { tap(CMD(KC_SPC)); } // Spotlight
 		else if (leader_sequence[1] == KC_O) { tap(CMD(OPT(KC_SPC))); } // mOom
@@ -285,15 +286,15 @@ void matrix_scan_user(void)
 	else if (leader_sequence[0] == KC_G) {
 		if (leader_sequence[1] == KC_N) { tap(HYPR(KC_F2)); } // meNu
 		else if (leader_sequence[1] == KC_B) { tap(CTRL(KC_F2)); } // Bar
-		else if (leader_sequence[1] == KC_Z) { tap(CMD(KC_LEFT)); }
-		else if (leader_sequence[1] == KC_A) { tap(CMD(KC_RIGHT)); }
-		else if (leader_sequence[1] == KC_P) { tap(CMD(KC_A)); tap(CMD(KC_V)); }
-		else if (leader_sequence[1] == KC_Y) { tap(CMD(KC_A)); tap(CMD(KC_C)); }
-		else if (leader_sequence[1] == KC_E) { tap(CMD(S(KC_LEFT))); }
-		else if (leader_sequence[1] == KC_P) { tap(CMD(S(KC_RIGHT))); }
-		else if (leader_sequence[1] == KC_H) { tap(CMD(CTRL(KC_LEFT))); }
-		else if (leader_sequence[1] == KC_S) { tap(CMD(CTRL(KC_RIGHT))); }
-		else if (leader_sequence[1] == KC_D) { tap(LCAG(KC_F11)); }
+		else if (leader_sequence[1] == KC_Z) { tap(CMD(KC_LEFT)); } // ⌘ ←
+		else if (leader_sequence[1] == KC_A) { tap(CMD(KC_RIGHT)); } // ⌘ →
+		else if (leader_sequence[1] == KC_P) { tap(CMD(KC_A)); tap(CMD(KC_V)); } // Paste all
+		else if (leader_sequence[1] == KC_Y) { tap(CMD(KC_A)); tap(CMD(KC_C)); } // Yank all
+		else if (leader_sequence[1] == KC_E) { tap(CMD(S(KC_LEFT))); } // ⌘ ⇧ ←
+		else if (leader_sequence[1] == KC_T) { tap(CMD(S(KC_RIGHT))); } // ⌘ ⇧ →
+		else if (leader_sequence[1] == KC_H) { tap(CMD(CTRL(KC_LEFT))); } // ⌘ ⌃ ←
+		else if (leader_sequence[1] == KC_S) { tap(CMD(CTRL(KC_RIGHT))); } // ⌘ ⌃ →
+		else if (leader_sequence[1] == KC_D) { tap(LCAG(KC_F11)); } // toDoist quick add
 		else if (leader_sequence[1] == KC_M) { tap(HYPR(KC_F4)); } // eMojis
 		else if (leader_sequence[1] == KC_LEAD) { SEND_STRING("... "); leading = false; }
 	}
