@@ -35,6 +35,7 @@ enum TapDance
 enum Keycode
 {
 	KC_UNUSED = SAFE_RANGE,
+	KC_NUM_ENT,
 	KC_ARR_ENT
 };
 
@@ -66,7 +67,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] =
 
 				KC_LEFT,	KC_RGHT,
 							KC_F16,
-	LT(Numpad, KC_SPC),	NUM_F13,	MEH(KC_SPC),
+	LT(Numpad, KC_SPC),		KC_F13,		MEH(KC_SPC),
 
 	// right hand
 	KC_F12,			KC_F6, 		KC_F7, 		KC_F8,   	KC_F9,   	KC_F10,   	KC_CAPS,
@@ -85,7 +86,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] =
 	// Left Hand
 	RESET,		_______,	_______,	_______,	_______,	_______,	_______,
 	_______,	_______,	_______,	_______,	_______,	_______,	_______,
-	TO(Base),	_______,	_______,	_______,	_______,	_______,
+	TO(Base),	_______,	_______,	KC_0,		_______,	_______,
 	_______,	_______,	_______,	_______,	_______,	_______,	_______,
 	_______,	_______,	_______,	_______,	_______,
 
@@ -98,7 +99,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] =
 	_______,	KC_EQL,		KC_7,		KC_8,		KC_9,		KC_MINS,	KC_SLSH,
 				KC_DOT,  	KC_4,   	KC_5,   	KC_6,   	KC_PLUS,   	KC_ASTR,
 	_______,	KC_COMM,	KC_1,		KC_2,		KC_3,		KC_ENT,		_______,
-							KC_0,		KC_0,		KC_CIRC,	KC_EXLM,	KC_X,
+							/* KC_NUM_ENT,	KC_0,		KC_CIRC,	KC_EXLM,	KC_X, */
+							X_____X,	KC_0,		KC_CIRC,	KC_EXLM,	KC_X,
 
 	_______,	_______,
 	_______,
@@ -190,6 +192,11 @@ bool process_record_user (uint16_t keycode, keyrecord_t *record)
 
 			break;
 
+		case KC_NUM_ENT:
+			tap(KC_ENT);
+			layer_off(Numpad);
+			return false;
+
 		case KC_ARR_ENT:
 			tap(KC_ENT);
 			layer_off(Arrows);
@@ -220,7 +227,6 @@ void matrix_scan_user(void)
 
 	else if (leader_sequence[0] == KC_LEAD) { tap(KC_DOT); }
 	else if (leader_sequence[0] == KC_P) { tap(MEH(KC_F3)); }
-	else if (leader_sequence[0] == KC_N) { layer_on(Numpad); leading = false; }
 	else if (leader_sequence[0] == KC_BSPACE) { layer_on(Arrows); leading = false; }
 	else if (leader_sequence[0] == KC_U) { tap(KC_F13); }
 	else if (leader_sequence[0] == KC_SPC) { tap(KC_DOT); tap(KC_SPC); }
@@ -301,6 +307,21 @@ void matrix_scan_user(void)
 		else if (leader_sequence[1] == KC_D) { tap(LCAG(KC_F11)); } // toDoist quick add
 		else if (leader_sequence[1] == KC_M) { tap(HYPR(KC_F4)); } // eMojis
 		else if (leader_sequence[1] == KC_LEAD) { SEND_STRING("... "); leading = false; }
+	}
+
+	/* else if (leader_sequence[0] == KC_N) { layer_on(Numpad); leading = false; } */
+	else if (leader_sequence[0] == KC_N) {
+		if (leader_sequence[1] == KC_U) { tap(KC_0); }
+		else if (leader_sequence[1] == KC_E) { tap(KC_1); }
+		else if (leader_sequence[1] == KC_O) { tap(KC_2); }
+		else if (leader_sequence[1] == KC_A) { tap(KC_3); }
+		else if (leader_sequence[1] == KC_I) { tap(KC_4); }
+		else if (leader_sequence[1] == KC_LEAD) { tap(KC_5); }
+		else if (leader_sequence[1] == KC_E) { tap(KC_1); }
+		else if (leader_sequence[1] == KC_O) { tap(KC_2); }
+		else if (leader_sequence[1] == KC_A) { tap(KC_3); }
+		else if (leader_sequence[1] == KC_I) { tap(KC_4); }
+		else if (leader_sequence[1] == KC_LEAD) { tap(KC_5); }
 	}
 
 	// ⌘ ⇧
