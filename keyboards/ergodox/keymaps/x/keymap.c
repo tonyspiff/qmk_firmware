@@ -32,10 +32,11 @@ enum TapDance
 	Tilde
 };
 
-/* enum Keycode */
-/* { */
-/* 	KC_UNUSED = SAFE_RANGE */
-/* }; */
+enum Keycode
+{
+	KC_UNUSED = SAFE_RANGE,
+	KC_ARR_ENT
+};
 
 #define SHUTDOWN LCAG(KC_EJCT)
 #define LOCKSCR CTRL(RSFT(KC_PWR))
@@ -122,7 +123,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] =
 	_______,	_______,	_______,	_______,	_______,	_______,	_______,
 				_______,  	KC_LEFT,   	KC_DOWN,   	KC_UP,   	KC_RGHT,	_______,
 	_______,	_______,	_______,	_______,	_______,	_______,	_______,
-							_______,	_______,	_______,	_______,	_______,
+							KC_ARR_ENT,	_______,	_______,	_______,	_______,
 
 	_______,	_______,
 	_______,
@@ -173,9 +174,7 @@ bool process_record_user (uint16_t keycode, keyrecord_t *record)
 	{
 		case KC_ESC:
 			if (isCmdTabOn)
-			{
 				release(KC_CMD);
-			}
 
 			if (get_oneshot_mods()
 				&& !has_oneshot_mods_timed_out())
@@ -187,9 +186,14 @@ bool process_record_user (uint16_t keycode, keyrecord_t *record)
 
 		case KC_ENT:
 			if (isCmdTabOn)
-			{
 				release(KC_CMD);
-			}
+
+			break;
+
+		case KC_ARR_ENT:
+			tap(KC_ENT);
+			layer_off(Arrows);
+			return false;
 	}
 
 	return true;
@@ -217,7 +221,7 @@ void matrix_scan_user(void)
 	else if (leader_sequence[0] == KC_LEAD) { tap(KC_DOT); }
 	else if (leader_sequence[0] == KC_P) { tap(MEH(KC_F3)); }
 	else if (leader_sequence[0] == KC_N) { layer_on(Numpad); leading = false; }
-	else if (leader_sequence[0] == KC_W) { layer_on(Arrows); leading = false; }
+	else if (leader_sequence[0] == KC_BSPACE) { layer_on(Arrows); leading = false; }
 	else if (leader_sequence[0] == KC_U) { tap(KC_F13); }
 	else if (leader_sequence[0] == KC_SPC) { tap(KC_DOT); tap(KC_SPC); }
 	else if (leader_sequence[0] == KC_ENT) { tap(KC_DOT); tap(KC_ENT); }
@@ -244,7 +248,7 @@ void matrix_scan_user(void)
 	// Symbols
 	else if (leader_sequence[0] == KC_H) {
 		if (leader_sequence[1] == KC_LEAD) { repeatTap(); }
-		else if (leader_sequence[1] == KC_QUOTE) { tap(KC_DOUBLE_QUOTE); }
+		else if (leader_sequence[1] == KC_QUOTE) { tap(KC_DOUBLE_QUOTE); tap(KC_DOUBLE_QUOTE); tap(KC_LEFT); } // pair of double quotes
 		else if (leader_sequence[1] == KC_COMM) { tap(KC_LT); }
 		else if (leader_sequence[1] == KC_P) { tap(KC_LPRN); tap(KC_RPRN); tap(KC_LEFT); } // pair of Parentheses
 		else if (leader_sequence[1] == KC_Y) { tap(KC_RPRN); }
