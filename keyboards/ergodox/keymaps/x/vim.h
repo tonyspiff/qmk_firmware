@@ -7,7 +7,22 @@
 #ifndef VIM_X_H
 #define VIM_X_H
 
+#include "quantum.h"
+
 LEADER_EXTERNS();
+
+bool vim_process_record_user(uint16_t keycode, keyrecord_t *record);
+void addToVimQueue(uint16_t keycode);
+void clearVimQueue(void);
+void vim_b(void);
+void vim_B(void);
+void vim_db(void);
+void vim_dd(void);
+void vim_dw(void);
+void vim_D(void);
+void vim_i(void);
+void vim_w(void);
+void vim_W(void);
 
 #define KC_SUPR (QK_LCTL | QK_LALT | QK_LGUI)
 #define SUPR(kc) (QK_LCTL | QK_LALT | QK_LGUI | (kc))

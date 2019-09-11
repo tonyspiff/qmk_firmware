@@ -4,6 +4,7 @@
  */
 #include QMK_KEYBOARD_H
 #include "vim.h"
+#include "mods.h"
 #include "ergodox_leds.h"
 
 #define curLayer (biton32(layer_state))
@@ -18,6 +19,7 @@
 enum Layer
 {
 	Base = 0,
+	Vimode,
 	Numpad,
 	Arrows
 };
@@ -36,7 +38,12 @@ enum Keycode
 {
 	KC_UNUSED = SAFE_RANGE,
 	KC_NUM_ENT,
-	KC_ARR_ENT
+	KC_ARR_ENT,
+	VIM_ESC,
+	VIM_B,
+	VIM_D,
+	VIM_I,
+	VIM_W
 };
 
 #define SHUTDOWN LCAG(KC_EJCT)
@@ -79,6 +86,31 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] =
 	KC_MPLY,		KC_MNXT,
 	KC_F16,
 	CTRL(KC_F2),	_______,	KC_BSPC
+),
+
+ [Vimode] = LAYOUT_ergodox
+ (
+	// Left Hand
+ 	_______,	_______,	_______,	_______,	_______,	_______,	_______,
+ 	_______,	_______,	_______,	_______,	_______,	_______,	_______,
+	VIM_ESC,	_______,	_______,	_______,	_______,	VIM_I,
+ 	_______,	_______,	_______,	_______,	_______,	_______,	_______,
+ 	_______,	_______,	_______,	_______,	_______,
+
+ 				_______,	_______,
+ 							_______,
+ 	_______,	_______,	_______,
+
+ 	// Right Hand
+ 	_______,	_______,	_______,	_______,	_______,	_______,	_______,
+ 	_______,	_______,	_______,	_______,	_______,	_______,	_______,
+ 				VIM_D,		_______,	_______,	_______,	_______,	_______,
+ 	_______,	VIM_B,		_______,	VIM_W,		_______,	_______,	_______,
+ 							_______,	_______,	_______,	_______,	_______,
+
+ 	_______,	_______,
+ 	_______,
+ 	_______,	_______,	_______
 ),
 
 [Numpad] = LAYOUT_ergodox
@@ -167,10 +199,16 @@ void eeconfig_init_user(void)
 
 static bool isCmdTabOn = false;
 
-// Called by QMK during key processing before the actual key event is handled.
-bool process_record_user (uint16_t keycode, keyrecord_t *record) 
+#include "vim.c"
+
+// Called by QMK during key processing before the actual key event is handled
+bool process_record_user(uint16_t keycode, keyrecord_t *record) 
 {
-	if (!record->event.pressed) { return true; }
+	if (!vim_process_record_user(keycode, record))
+		return false;
+
+	if (!record->event.pressed)
+		return true;
 
 	switch (keycode)
 	{
@@ -211,10 +249,10 @@ void matrix_scan_user(void)
 {
 	bool isRedLedOn = leading;
 
-	bool isGreenLedOn = curLayer == Numpad
-		|| curLayer == Arrows;
+	bool isGreenLedOn = curLayer == Vimode;
 
-	bool isBlueLedOn = isShiftOn || isCmdOn || isCtrlOn || isOptionOn;
+	bool isBlueLedOn = isShiftOn || isCmdOn || isCtrlOn || isOptionOn
+		|| curLayer == Numpad || curLayer == Arrows;
 
 	toggleLed(isRedLedOn, LedColorRed);
 	toggleLed(isGreenLedOn, LedColorGreen);
@@ -231,6 +269,7 @@ void matrix_scan_user(void)
 	else if (leader_sequence[0] == KC_U) { tap(KC_F13); }
 	else if (leader_sequence[0] == KC_SPC) { tap(KC_DOT); tap(KC_SPC); }
 	else if (leader_sequence[0] == KC_ENT) { tap(KC_DOT); tap(KC_ENT); }
+	else if (leader_sequence[0] == KC_V) { layer_on(Vimode); leading = false; }
 
 	// App switching
 	else if (leader_sequence[0] == KC_T) {
