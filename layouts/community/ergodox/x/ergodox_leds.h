@@ -4,8 +4,8 @@
  *
  * Ergodox LEDs
  */
-#ifndef ERGODOX_LEDS_X_H
-#define ERGODOX_LEDS_X_H
+#ifndef ERGODOX_LEDS_H
+#define ERGODOX_LEDS_H
 
 enum LedColor
 {
@@ -40,3 +40,4 @@ void toggleLed(bool isOn, uint8_t color)
 }
 
 #endif
+
