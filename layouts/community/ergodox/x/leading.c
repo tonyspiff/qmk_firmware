@@ -46,11 +46,20 @@ void process_leading_sequence(void)
 		case KC_ESC: endLeading(); break;
 		case KC_LEAD: tapL(KC_DOT); break;
 		case KC_P: tapL(MEH(KC_F3)); break;
-		case KC_BSPACE: layer_on(Arrows); endLeading(); break;
 		case KC_U: tapL(KC_F13); break;
+		case KC_N: layer_on(Numpad); endLeading(); break;
+		case KC_BSPACE: layer_on(Arrows); endLeading(); break;
 		case KC_SPC: tapL(KC_DOT); tapL(KC_SPC); break;
 		case KC_ENT: tapL(KC_DOT); tapL(KC_ENT); break;
 		case KC_V: isVimodeOn = true; endLeading(); break;
+
+		// One Shot Function Layer
+		case KC_F:
+			layer_on(Function);
+            set_oneshot_layer(Function, ONESHOT_START);
+            clear_oneshot_layer_state(ONESHOT_PRESSED);
+			endLeading();
+			break;
 			
 		// App switching
 		case KC_T:
@@ -136,24 +145,6 @@ void process_leading_sequence(void)
 				case KC_D: tapL(LCAG(KC_F11)); break; // toDoist quick add
 				case KC_M: tapL(HYPR(KC_F4)); break; // eMojis
 				case KC_LEAD: SEND_STRING("... "); endLeading(); break;
-			}
-			break;
-			
-		/* case KC_N: layer_on(Numpad); endLeading(); break; */
-		case KC_N:
-			switch (leader_sequence[1])
-			{
-				case KC_U: tapL(KC_0); break;
-				case KC_E: tapL(KC_1); break;
-				case KC_O: tapL(KC_2); break;
-				case KC_A: tapL(KC_3); break;
-				case KC_I: tapL(KC_4); break;
-				case KC_LEAD: tapL(KC_5); break;
-				/* case KC_E: tapL(KC_1); break; */
-				/* case KC_O: tapL(KC_2); break; */
-				/* case KC_A: tapL(KC_3); break; */
-				/* case KC_I: tapL(KC_4); break; */
-				/* case KC_LEAD: tapL(KC_5); break; */
 			}
 			break;
 			
@@ -250,7 +241,7 @@ void process_leading_sequence(void)
 			}
 			break;
 			
-		case KC_F: // ^
+		case KC_X: // ^
 			switch (leader_sequence[1])
 			{
 				case KC_A: tapUnicodeL(0x00E2); break;

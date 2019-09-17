@@ -24,9 +24,7 @@ enum TapDance
 
 enum Keycode
 {
-	KC_UNUSED = SAFE_RANGE,
-	KC_NUM_ENT,
-	KC_ARR_ENT
+	KC_UNUSED = SAFE_RANGE
 };
 
 #define SHUTDOWN LCAG(KC_EJCT)
@@ -58,7 +56,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] =
 
 				KC_LEFT,	KC_RGHT,
 							KC_F16,
-	LT(Numpad, KC_SPC),		KC_F13,		MEH(KC_SPC),
+	KC_SPC,		KC_F13,		MEH(KC_SPC),
 
 	// right hand
 	KC_F12,			KC_F6, 		KC_F7, 		KC_F8,   	KC_F9,   	KC_F10,   	KC_CAPS,
@@ -77,7 +75,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] =
 	// Left Hand
 	RESET,		_______,	_______,	_______,	_______,	_______,	_______,
 	_______,	_______,	_______,	_______,	_______,	_______,	_______,
-	TO(Base),	_______,	_______,	KC_0,		_______,	_______,
+	TO(Base),	KC_3,		KC_2,		KC_1,		KC_0,		_______,
 	_______,	_______,	_______,	_______,	_______,	_______,	_______,
 	_______,	_______,	_______,	_______,	_______,
 
@@ -86,12 +84,36 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] =
 	_______,	_______,	_______,
 
 	// Right Hand
-	_______,	_______,	_______,	_______,	KC_LPRN,	KC_RPRN,	_______,
+	_______,	_______,	_______,	_______,	_______,	_______,	_______,
 	_______,	KC_EQL,		KC_7,		KC_8,		KC_9,		KC_MINS,	KC_SLSH,
 				KC_DOT,  	KC_4,   	KC_5,   	KC_6,   	KC_PLUS,   	KC_ASTR,
 	_______,	KC_COMM,	KC_1,		KC_2,		KC_3,		KC_ENT,		_______,
-							/* KC_NUM_ENT,	KC_0,		KC_CIRC,	KC_EXLM,	KC_X, */
-							X_____X,	KC_0,		KC_CIRC,	KC_EXLM,	KC_X,
+							_______,	KC_0,		KC_CIRC,	KC_EXLM,	KC_X,
+
+	_______,	_______,
+	_______,
+	_______,	_______,	_______
+),
+
+[Function] = LAYOUT_ergodox
+(
+	// Left Hand
+	_______,	_______,	_______,	_______,	_______,	_______,	_______,
+	_______,	_______,	_______,	_______,	_______,	_______,	_______,
+	TO(Base),	KC_F3,		KC_F2,		KC_F1,		KC_F10,		_______,
+	_______,	KC_F13,		KC_F12, 	KC_F11,		_______,	_______,	_______,
+	_______,	_______,	_______,	_______,	_______,
+
+				_______,	_______,
+							_______,
+	_______,	_______,	_______,
+
+	// Right Hand
+	_______,	_______,	_______,	_______,	_______,	_______,	_______,
+	_______,	_______,	KC_F7,		KC_F8,		KC_F9,		_______,	_______,
+				_______, 	KC_F4,   	KC_F5,   	KC_F6,   	_______,	_______,
+	_______,	_______,	KC_F1,		KC_F2,		KC_F3,		_______,	_______,
+							_______,	KC_F10,		_______,	_______,	_______,
 
 	_______,	_______,
 	_______,
@@ -116,7 +138,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] =
 	_______,	_______,	_______,	_______,	_______,	_______,	_______,
 				_______,  	KC_LEFT,   	KC_DOWN,   	KC_UP,   	KC_RGHT,	_______,
 	_______,	_______,	_______,	_______,	_______,	_______,	_______,
-							KC_ARR_ENT,	_______,	_______,	_______,	_______,
+							_______,	_______,	_______,	_______,	_______,
 
 	_______,	_______,
 	_______,
@@ -144,23 +166,17 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record)
 	switch (keycode)
 	{
 		case KC_ESC:
-			if (get_oneshot_mods()
-				&& !has_oneshot_mods_timed_out())
+			if (get_oneshot_mods() && !has_oneshot_mods_timed_out())
 			{
 				clear_oneshot_mods();
 				return false;
 			}
 			break;
 
-		case KC_NUM_ENT:
-			tap(KC_ENT);
-			layer_off(Numpad);
-			return false;
-
-		case KC_ARR_ENT:
-			tap(KC_ENT);
-			layer_off(Arrows);
-			return false;
+		case KC_ENT:
+			if (curLayer != Base)
+				layer_clear();
+			break;
 	}
 
 	return true;
@@ -174,7 +190,7 @@ void matrix_scan_user(void)
 	bool isGreenLedOn = isVimodeOn;
 
 	bool isBlueLedOn = isShiftOn || isCmdOn || isCtrlOn || isOptionOn
-		|| curLayer == Numpad || curLayer == Arrows;
+		|| curLayer != Base;
 
 	toggleLed(isRedLedOn, LedColorRed);
 	toggleLed(isGreenLedOn, LedColorGreen);
