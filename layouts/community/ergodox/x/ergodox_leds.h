@@ -4,8 +4,8 @@
  *
  * Ergodox LEDs
  */
-#ifndef ERGODOX_LEDS_H
-#define ERGODOX_LEDS_H
+#ifndef ERGODOX_LEDS_X_H
+#define ERGODOX_LEDS_X_H
 
 enum LedColor
 {

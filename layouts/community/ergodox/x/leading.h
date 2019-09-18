@@ -17,7 +17,5 @@ void repeatTapL(void);
 void tapUnicodeL(uint16_t code);
 #endif
 
-/* #include "leading.c" */
-
 #endif
 

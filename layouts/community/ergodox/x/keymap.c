@@ -12,16 +12,6 @@
 
 #define X_____X KC_NO
 
-enum TapDance
-{
-	Colon = 0,
-	Quote,
-	Bracket,
-	Paren,
-	Brace,
-	Tilde
-};
-
 enum Keycode
 {
 	KC_UNUSED = SAFE_RANGE
@@ -29,18 +19,6 @@ enum Keycode
 
 #define SHUTDOWN LCAG(KC_EJCT)
 #define LOCKSCR CTRL(RSFT(KC_PWR))
-#define SYM_TAB LT(Arrows, KC_TAB)
-#define NUM_F13 LT(Numpad, KC_F13)
-
-qk_tap_dance_action_t tap_dance_actions[] =
-{
-	[Colon] = ACTION_TAP_DANCE_DOUBLE(KC_COLON, KC_SCOLON),
-	[Quote] = ACTION_TAP_DANCE_DOUBLE(KC_QUOTE, KC_DOUBLE_QUOTE),
-	[Bracket] = ACTION_TAP_DANCE_DOUBLE(KC_LBRACKET, KC_RBRACKET),
-	[Paren] = ACTION_TAP_DANCE_DOUBLE(KC_LEFT_PAREN, KC_RIGHT_PAREN),
-	[Brace] = ACTION_TAP_DANCE_DOUBLE(KC_LEFT_CURLY_BRACE, KC_RIGHT_CURLY_BRACE),
-	[Tilde] = ACTION_TAP_DANCE_DOUBLE(KC_TILDE, KC_GRAVE)
-};
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = 
 {
@@ -48,11 +26,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] =
 [Base] = LAYOUT_ergodox
 (
 	// left hand
-	LOCKSCR,		KC_F1,      KC_F2,   	KC_F3,		KC_F4,   	KC_F5,	KC_F11,
-	KC_GRV,			KC_QUOTE,	KC_COMM,	KC_LEAD,	KC_P,   	KC_Y,   LCAG(KC_F13),
+	_______,		KC_F1,      KC_F2,   	KC_F3,		KC_F4,   	KC_F5,	KC_F11,
+	KC_GRV,			KC_QUOTE,	KC_COMM,	KC_LEAD,	KC_P,   	KC_Y,   C(A(KC_V)),
 	KC_ESC,			KC_A,       KC_O,		KC_E,		KC_U,   	KC_I,
-	OSM(MOD_LSFT),	TD(Colon),	KC_Q,   	KC_J,		KC_K,   	KC_X,   HYPR(KC_F13),
-	KC_OPT,			KC_CMD,	    KC_CTRL,	KC_LEAD,	SYM_TAB,
+	OSM(MOD_LSFT),	KC_COLON,	KC_Q,   	KC_J,		KC_K,   	KC_X,   HYPR(KC_F13),
+	KC_OPT,			KC_CMD,	    KC_CTRL,	MO(Arrows),	KC_TAB,
 
 				KC_LEFT,	KC_RGHT,
 							KC_F16,
@@ -63,7 +41,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] =
 	G(KC_Y),		KC_F,	 	KC_G, 		KC_C,		KC_R,   	KC_L,		KC_SLSH,
 					KC_D,   	KC_H, 		KC_T,  		KC_N,   	KC_S,		KC_MINS,
 	G(KC_TAB),		KC_B,   	KC_M, 		KC_W,   	KC_V,   	KC_Z,		OSM(MOD_RSFT),
-								KC_ENT,		KC_LEAD,	KC_CTRL,  	KC_CMD,		KC_OPT,
+								KC_ENT,		MO(Numpad),	KC_CTRL,  	KC_CMD,		KC_OPT,
 
 	KC_MPLY,		KC_MNXT,
 	KC_F16,
@@ -84,7 +62,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] =
 	_______,	_______,	_______,
 
 	// Right Hand
-	_______,	_______,	_______,	_______,	_______,	_______,	_______,
+	_______,	_______,	_______,	_______,	_______,	_______,	RESET,
 	_______,	KC_EQL,		KC_7,		KC_8,		KC_9,		KC_MINS,	KC_SLSH,
 				KC_DOT,  	KC_4,   	KC_5,   	KC_6,   	KC_PLUS,   	KC_ASTR,
 	_______,	KC_COMM,	KC_1,		KC_2,		KC_3,		KC_ENT,		_______,

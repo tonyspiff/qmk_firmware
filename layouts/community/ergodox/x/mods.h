@@ -4,8 +4,8 @@
  *
  * Modifiers Helpers
  */
-#ifndef MODS_H
-#define MODS_H
+#ifndef MODS_X_H
+#define MODS_X_H
 
 #define KC_CMD KC_LCMD
 #define CMD(kc) LCMD(kc)

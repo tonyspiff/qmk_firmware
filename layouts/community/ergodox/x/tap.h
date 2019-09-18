@@ -4,8 +4,8 @@
  *
  * Tap Helpers
  */
-#ifndef TAP_H
-#define TAP_H
+#ifndef TAP_X_H
+#define TAP_X_H
 
 #define press(keycode) register_code16(keycode)
 #define release(keycode) unregister_code16(keycode)

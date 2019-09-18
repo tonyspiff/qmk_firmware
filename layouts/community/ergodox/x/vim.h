@@ -4,8 +4,8 @@
  *
  * vim.h - inspired by: https://github.com/qmk/qmk_firmware/blob/master/keyboards/ergodox_ez/keymaps/vim/vim.h
  */
-#ifndef VIM_H
-#define VIM_H
+#ifndef VIM_X_H
+#define VIM_X_H
 
 #include QMK_KEYBOARD_H
 
@@ -14,7 +14,7 @@ void addToVimQueue(uint16_t keycode);
 void clearVimQueue(void);
 bool processQueue(void);
 
-bool isVimodeOn;
+extern bool isVimodeOn;
 
 #endif
 

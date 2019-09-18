@@ -98,6 +98,7 @@ void process_leading_sequence(void)
 				case KC_U: tapL(KC_PLUS); break; // plUs
 				case KC_I: tapL(KC_1); break;
 				case KC_COLON: tapL(KC_SCOLON); break;
+				case KC_N: tapL(KC_SCOLON); break; // semicoloN
 				case KC_Q: tapL(KC_QUES); break; // Question mark
 				case KC_J: tapL(KC_DOWN); break;
 				case KC_K: tapL(KC_UP); break;
@@ -147,6 +148,18 @@ void process_leading_sequence(void)
 				case KC_LEAD: SEND_STRING("... "); endLeading(); break;
 			}
 			break;
+
+		// Macros & Misc
+		case KC_Z:
+			switch (leader_sequence[1])
+			{
+				case KC_I: tapL(CMD(KC_PLUS)); break; // zoom in: ⌘ +
+				case KC_O: tapL(CMD(KC_MINUS)); break; // zoom out: ⌘ -
+				case KC_LEAD: tapL(CMD(KC_DOT)); break; // ⌘ .
+				case KC_J: tapL(CMD(OPT(KC_DOWN))); break; // ⌘ ⌥ ↓
+				case KC_K: tapL(CMD(OPT(KC_UP))); break; // ⌘ ⌥ ↑
+			}
+			break;
 			
 		// ⌘ ⇧
 		case (KC_L):
@@ -172,6 +185,12 @@ void process_leading_sequence(void)
 		case KC_O:
 			if (leader_sequence[1])
 				tapL(OPT(leader_sequence[1]));
+			break;
+
+		// ⌘ ⌥  - Command Option
+		case KC_Q:
+			if (leader_sequence[1])
+				tapL(CMD(OPT(leader_sequence[1])));
 			break;
 			
 		// Media: mp-play mn-next mr-previous mj-volDown mk-volUp mm-mute
@@ -232,7 +251,7 @@ void process_leading_sequence(void)
 			}
 			break;
 
-		case KC_MINS: // ~
+		case KC_MINUS: // ~
 			switch (leader_sequence[1])
 			{
 				case KC_A: tapUnicodeL(0x00E3); break;

@@ -1,6 +1,7 @@
 #include "vim.h"
 #include "tap.h"
 #include "mods.h"
+#include <string.h>
 
 bool isVimodeOn = false;
 uint16_t vimQueue[2] = { 0, 0 };
@@ -94,7 +95,7 @@ bool processQueue(void)
 			}
 			break;
 
-		case KC_DOT:
+		case KC_LEAD:
 			memcpy(vimQueue, previousVimQueue, sizeof(previousVimQueue));
 			return processQueue();
 	}
@@ -108,12 +109,3 @@ bool processQueue(void)
 	return shouldPassKeyThru;
 }
 
-/* void vim_D(void) */
-/* { */
-/* 	tap(CMD(KC_DEL)); */
-/* } */
-
-/* void vim_W(void) */
-/* { */
-/* 	tap(OPT(KC_RIGHT)); */
-/* } */
