@@ -27,7 +27,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] =
 (
 	// left hand
 	_______,		KC_F1,      KC_F2,   	KC_F3,		KC_F4,   	KC_F5,	KC_F11,
-	KC_GRV,			KC_QUOTE,	KC_COMM,	KC_LEAD,	KC_P,   	KC_Y,   C(A(KC_V)),
+	KC_GRV,			KC_QUOTE,	KC_COMM,	KC_LEAD,	KC_P,   	KC_Y,   CMD(OPT(KC_V)),
 	KC_ESC,			KC_A,       KC_O,		KC_E,		KC_U,   	KC_I,
 	OSM(MOD_LSFT),	KC_COLON,	KC_Q,   	KC_J,		KC_K,   	KC_X,   HYPR(KC_F13),
 	KC_OPT,			KC_CMD,	    KC_CTRL,	MO(Arrows),	KC_TAB,
@@ -52,10 +52,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] =
 (
 	// Left Hand
 	RESET,		_______,	_______,	_______,	_______,	_______,	_______,
+	_______,	_______,	_______,	KC_DOT,		_______,	_______,	_______,
+	TO(Base),	KC_3,		KC_2,		KC_1,		KC_0,		TO(Base),
 	_______,	_______,	_______,	_______,	_______,	_______,	_______,
-	TO(Base),	KC_3,		KC_2,		KC_1,		KC_0,		_______,
-	_______,	_______,	_______,	_______,	_______,	_______,	_______,
-	_______,	_______,	_______,	_______,	_______,
+	_______,	_______,	_______,	_______,	TO(Base),
 
 				_______,	_______,
 							_______,
@@ -154,6 +154,15 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record)
 		case KC_ENT:
 			if (curLayer != Base)
 				layer_clear();
+			break;
+
+		case KC_LEAD:
+			if (isShiftOn)
+			{
+				tap(KC_RIGHT_ANGLE_BRACKET);
+				clear_oneshot_mods();
+				return false;
+			}
 			break;
 	}
 

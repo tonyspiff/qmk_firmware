@@ -38,8 +38,11 @@ bool processQueue(void)
 	switch (vimQueue[0])
 	{
 		case KC_ESC: break;
+		case KC_TAB:
+			 // FALL THRU
 		case KC_ENT: isVimodeOn = false; shouldPassKeyThru = true; break;
 
+		case KC_A: tap(KC_RIGHT); isVimodeOn = false; break;
 		case KC_B: tap(OPT(KC_LEFT)); break;
 		case KC_H: tap(KC_LEFT); break;
 		case KC_I: isVimodeOn = false; break;

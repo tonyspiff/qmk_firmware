@@ -88,9 +88,8 @@ void process_leading_sequence(void)
 			switch (leader_sequence[1])
 			{
 				case KC_LEAD: repeatTapL(); break;
-				case KC_QUOTE: tapL(KC_DOUBLE_QUOTE); tapL(KC_DOUBLE_QUOTE); tapL(KC_LEFT); break; // pair of double quotes
-				case KC_COMM: tapL(KC_LT); break;
-				case KC_P: tapL(KC_LPRN); tapL(KC_RPRN); tapL(KC_LEFT); break; // pair of Parentheses
+				case KC_QUOTE: tapL(KC_DOUBLE_QUOTE); break; // double quote
+				case KC_P: tapL(KC_LPRN); break; // Parenthesis
 				case KC_Y: tapL(KC_RPRN); break;
 				case KC_A: tapL(KC_ASTR); break; // Asterisk
 				case KC_O: tapL(KC_0); break;
@@ -105,19 +104,35 @@ void process_leading_sequence(void)
 				case KC_X: tapL(KC_EXLM); break; // eXclamation mark
 				case KC_F: tapL(KC_CIRC); break; // circumFlex
 				case KC_G: tapL(KC_AT); break; // at sigGn
-				case KC_C: tapL(KC_LEFT_CURLY_BRACE); tapL(KC_RIGHT_CURLY_BRACE); tapL(KC_LEFT); break; // pair of Curly braces
+				case KC_C: tapL(KC_LEFT_CURLY_BRACE); break; // Curly brace
 				case KC_R: tapL(KC_PERC); break; // peRcent
 				case KC_L: tapL(KC_RIGHT_CURLY_BRACE); break;
 				case KC_D: tapL(KC_DLR); break; // Dollar
 				case KC_H: tapL(KC_HASH); break; // Hash
 				case KC_T: tapL(KC_TILDE); break; // Tilde
 				case KC_S: tapL(KC_BSLS); break; // backSlash
-				case KC_B: tapL(KC_LBRACKET); tapL(KC_RBRACKET); tapL(KC_LEFT); break; // pair of Brackets
+				case KC_B: tapL(KC_LBRACKET); break; // Brackets
 				case KC_M: tapL(KC_AMPR); break; // aMpersand
 				case KC_V: tapL(KC_PIPE); break; // Vertical bar
 				case KC_Z: tapL(KC_RBRACKET); break;
 			}
 			break;
+
+		// Special Symbols
+		case KC_W:
+			switch (leader_sequence[1])
+			{
+				case KC_E: tapL(KC_LPRN); tapL(KC_RPRN); tapL(KC_LEFT); break; // pair of parenthesEs
+				case KC_U: tapL(KC_LEFT_CURLY_BRACE); tapL(KC_RIGHT_CURLY_BRACE); tapL(KC_LEFT); break; // pair of cUrly braces
+				case KC_O: tapL(KC_LBRACKET); tapL(KC_RBRACKET); tapL(KC_LEFT); break; // pair of crOtchets
+				case KC_A: tapL(KC_DOUBLE_QUOTE); tapL(KC_DOUBLE_QUOTE); tapL(KC_LEFT); break; // pair of double quotes
+				case KC_LEAD: tapL(KC_DOT); tapL(KC_DOT); break;
+				case KC_COMM: tapL(KC_LEFT_ANGLE_BRACKET); tapL(KC_RIGHT_ANGLE_BRACKET); tapL(KC_LEFT); break;
+				case KC_QUOTE: tapL(KC_QUOTE); tapL(KC_QUOTE); tapL(KC_LEFT); break; // pair of quotes
+				case KC_GRAVE: tapL(KC_GRAVE); tapL(KC_GRAVE); tapL(KC_LEFT); break; // pair of grave accents
+			}
+			break;
+
 			
 		// ⌘ - Command
 		case KC_C:
@@ -174,7 +189,7 @@ void process_leading_sequence(void)
 		// ⌃ - contRol
 		case (KC_R):
 			if (leader_sequence[1])
-				tapL(C(leader_sequence[1]));
+				tapL(CTRL(leader_sequence[1]));
 			/* case KC_J: tapL(C(KC_DOWN)); break; */
 			/* case KC_K: tapL(C(KC_UP)); break; */
 			/* case KC_H: tapL(C(KC_LEFT)); break; */
@@ -191,6 +206,12 @@ void process_leading_sequence(void)
 		case KC_Q:
 			if (leader_sequence[1])
 				tapL(CMD(OPT(leader_sequence[1])));
+			break;
+
+		// ⌘ ⌃ - Command Control
+		case KC_COLON:
+			if (leader_sequence[1])
+				tapL(CMD(CTRL(leader_sequence[1])));
 			break;
 			
 		// Media: mp-play mn-next mr-previous mj-volDown mk-volUp mm-mute
@@ -215,20 +236,9 @@ void process_leading_sequence(void)
 		/* bindSequenceTwo(KC_COMM, KC_D) && leader_sequence[2] == (KC_B): ctrl(KC_BSPC); break; */
 		/* bindSequenceTwo(KC_COMM, KC_D) && leader_sequence[2] == (KC_W): ctrl(KC_DEL); break; } */
 		
-		// Tabs / Extra
-		// gt: ⌘ ⇧ →	 ge: ⌘ ⇧ ←	 gs: ⌘ ⌃ →	 gh: ⌘ ⌃ ←
-		/* bindSequenceTwo(KC_G, KC_T: tapL(SGUI(KC_RIGHT))) */ /* bindSequenceTwo(KC_G, KC_E: tapL(SGUI(KC_LEFT))) */
-		/* bindSequenceTwo(KC_G, KC_S: tapL(CMD(C(KC_RIGHT)))) */ /* bindSequenceTwo(KC_G, KC_H: tapL(CMD(C(KC_LEFT)))) */
-		
 		// Window / Split / Panel
 		// ⏎ w : ⌘ ]
 		/* bindSequenceTwo(KC_ENT, KC_W: tapL(CMD(KC_RBRC))) */
-		
-		// Arrows
-		/* case KC_J: tapL(KC_DOWN)) */
-		/* case KC_K: tapL(KC_UP)) */
-		/* case KC_H: tapL(KC_LEFT)) */
-		/* case KC_S: tapL(KC_RIGHT)) */
 			
 #if defined(UNICODE_ENABLE)
 		// Unicode, Accented characters
