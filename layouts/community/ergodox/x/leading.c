@@ -210,7 +210,7 @@ void process_leading_sequence(void)
 			break;
 
 		// ⌘ ⌃ - Command Control
-		case KC_COLON:
+		case KC_A:
 			if (leader_sequence[1])
 				tapL(CMD(CTRL(leader_sequence[1])));
 			break;
@@ -240,8 +240,16 @@ void process_leading_sequence(void)
 		// Window / Split / Panel
 		// ⏎ w : ⌘ ]
 		/* bindSequenceTwo(KC_ENT, KC_W: tapL(CMD(KC_RBRC))) */
-			
-#if defined(UNICODE_ENABLE)
+
+#if !defined(UNICODE_ENABLE)
+		// Accented characters - macos - no unicode
+		case KC_QUOTE: tapL(OPT(KC_E)); break; // ´
+		case KC_GRAVE: tapL(OPT(KC_GRAVE)); break; // `
+		case KC_MINUS: tapL(OPT(KC_N)); break; // ˜
+		case KC_X: tapL(OPT(KC_I)); break; // ˆ
+		case KC_COMM: tapL(OPT(KC_C)); break; // ç
+		case KC_COLON: tapL(OPT(KC_U)); break; // ¨
+#else	
 		// Unicode, Accented characters
 		case KC_QUOTE: // ¸ or ´
 			switch (leader_sequence[1])
