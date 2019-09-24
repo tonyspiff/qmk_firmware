@@ -55,7 +55,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] =
 	_______,	_______,	_______,	KC_DOT,		_______,	_______,	_______,
 	TO(Base),	KC_3,		KC_2,		KC_1,		KC_0,		TO(Base),
 	_______,	_______,	_______,	_______,	_______,	_______,	_______,
-	_______,	_______,	_______,	_______,	TO(Base),
+	_______,	_______,	_______,	_______,	_______,
 
 				_______,	_______,
 							_______,
@@ -151,6 +151,8 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record)
 			}
 			break;
 
+		case KC_TAB:
+			// FALL THRU
 		case KC_ENT:
 			if (curLayer != Base)
 				layer_clear();

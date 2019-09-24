@@ -160,6 +160,7 @@ void process_leading_sequence(void)
 				case KC_S: tapL(CMD(CTRL(KC_RIGHT))); break; // ⌘ ⌃ →
 				case KC_D: tapL(LCAG(KC_F11)); break; // toDoist quick add
 				case KC_M: tapL(HYPR(KC_F4)); break; // eMojis
+				case KC_C: tapL(HYPR(KC_F5)); break; // Close notifications
 				case KC_LEAD: SEND_STRING("... "); endLeading(); break;
 			}
 			break;
