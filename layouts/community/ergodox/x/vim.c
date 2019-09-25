@@ -42,6 +42,8 @@ bool processQueue(void)
 			 // FALL THRU
 		case KC_ENT: isVimodeOn = false; shouldPassKeyThru = true; break;
 
+		case KC_SPACE: tap(KC_PGDOWN); break;
+		case KC_MINUS: tap(KC_PGUP); break;
 		case KC_A: tap(KC_RIGHT); isVimodeOn = false; break;
 		case KC_B: tap(OPT(KC_LEFT)); break;
 		case KC_H: tap(KC_LEFT); break;
@@ -86,6 +88,7 @@ bool processQueue(void)
 			{
 				case KC_A: tap(CMD(KC_RIGHT)); break;
 				case KC_Z: tap(CMD(KC_LEFT)); break;
+				case KC_G: tap(KC_HOME); break;
 				case 0: shouldClearQueue = false; break;
 			}
 			break;
