@@ -26,16 +26,26 @@ bool vim_process_record_user(uint16_t keycode, keyrecord_t *record)
 
 void addToVimQueue(uint16_t keycode)
 {
-	if (vimQueue[0] == 0) 
-		vimQueue[0] = keycode;
-	else
-		vimQueue[1] = keycode;
+	for (uint8_t i = 0; i < sizeof(vimQueue); i++) 
+	{
+		if (vimQueue[i] == 0) 
+		{
+			vimQueue[i] = keycode;
+			break;
+		}
+	}
 }
 
 void clearVimQueue(void)
 {
-	vimQueue[0] = 0;
-	vimQueue[1] = 0;
+	memset(vimQueue, 0, sizeof(vimQueue));
+}
+
+void clearModsAndTap(uint16_t keycode)
+{
+	clear_mods();
+	clear_oneshot_mods();
+	tap(keycode);
 }
 
 bool processQueue(void)
@@ -56,15 +66,9 @@ bool processQueue(void)
 
 		case KC_A:
 			if (isShiftOn)
-			{
-				clear_mods();
-				clear_oneshot_mods();
-				tap(CMD(KC_RIGHT));
-			}
+				clearModsAndTap(CMD(KC_RIGHT));
 			else
-			{
 				tap(KC_RIGHT);
-			}
 
 			isVimodeOn = false;
 			break;
@@ -82,13 +86,7 @@ bool processQueue(void)
 
 		// TODO: Copy content before deleting
 		case KC_D:
-			if (isShiftOn)
-			{
-				clear_mods();
-				clear_oneshot_mods();
-				tap(CTRL(KC_K));
-				break;
-			}
+			if (isShiftOn) { clearModsAndTap(CTRL(KC_K)); break; }
 
 			switch (vimQueue[1])
 			{
@@ -100,13 +98,7 @@ bool processQueue(void)
 			break;
 
 		case KC_G:
-			if (isShiftOn)
-			{
-				clear_mods();
-				clear_oneshot_mods();
-				tap(KC_END);
-				break;
-			}
+			if (isShiftOn) { clearModsAndTap(KC_END); break; }
 
 			switch (vimQueue[1])
 			{
@@ -120,12 +112,7 @@ bool processQueue(void)
 		case KC_H: tap(KC_LEFT); break;
 
 		case KC_I:
-			if (isShiftOn)
-			{
-				clear_mods();
-				clear_oneshot_mods();
-				tap(CMD(KC_LEFT));
-			}
+			if (isShiftOn) { clearModsAndTap(CMD(KC_LEFT)); }
 
 			isVimodeOn = false;
 			break;
@@ -138,24 +125,13 @@ bool processQueue(void)
 		case KC_W: tap(OPT(KC_RIGHT)); break;
 
 		case KC_X:
-			if (isShiftOn)
-			{
-				clear_mods();
-				clear_oneshot_mods();
-				tap(KC_BSPACE);
-				break;
-			}
+			if (isShiftOn) { clearModsAndTap(KC_BSPACE); break; }
 
 			tap(KC_DEL);
 			break;
 
 		case KC_Y:
-			if (isShiftOn)
-			{
-				tap(CMD(KC_RIGHT));
-				tap(CMD(KC_C));
-				break;
-			}
+			if (isShiftOn) { tap(CMD(KC_RIGHT)); tap(CMD(KC_C)); break; }
 
 			switch (vimQueue[1])
 			{
@@ -167,6 +143,19 @@ bool processQueue(void)
 		case KC_LEAD:
 			memcpy(vimQueue, previousVimQueue, sizeof(previousVimQueue));
 			return processQueue();
+
+		/* CamelCase navigation */
+		// ,w: ⌃ →		,b: ⌃ ←	,vw: ⌃ ⇧ →		,vb: ⌃ ⇧ ←		,db: ⌃ ⌫ 	,dw: ⌃ ⌦
+		/* bindSequenceTwo(KC_COMM, KC_W, ctrl(KC_RIGHT); break; */
+		/* bindSequenceTwo(KC_COMM, KC_B, ctrl(KC_LEFT); break; */
+		/* bindSequenceTwo(KC_COMM, KC_V) && leader_sequence[2] == (KC_W): ctrlShift(KC_RIGHT); break; */
+		/* bindSequenceTwo(KC_COMM, KC_V) && leader_sequence[2] == (KC_B): ctrlShift(KC_LEFT); break; */
+		/* bindSequenceTwo(KC_COMM, KC_D) && leader_sequence[2] == (KC_B): ctrl(KC_BSPC); break; */
+		/* bindSequenceTwo(KC_COMM, KC_D) && leader_sequence[2] == (KC_W): ctrl(KC_DEL); break; } */
+		
+		// Window / Split / Panel
+		// ⏎ w : ⌘ ]
+		/* bindSequenceTwo(KC_ENT, KC_W: tapL(CMD(KC_RBRC))) */
 	}
 
 	if (shouldClearQueue)

@@ -227,19 +227,6 @@ void process_leading_sequence(void)
 			}
 			break;
 			
-		/* CamelCase navigation */
-		// ,w: ⌃ →		,b: ⌃ ←	,vw: ⌃ ⇧ →		,vb: ⌃ ⇧ ←		,db: ⌃ ⌫ 	,dw: ⌃ ⌦
-		/* bindSequenceTwo(KC_COMM, KC_W, ctrl(KC_RIGHT); break; */
-		/* bindSequenceTwo(KC_COMM, KC_B, ctrl(KC_LEFT); break; */
-		/* bindSequenceTwo(KC_COMM, KC_V) && leader_sequence[2] == (KC_W): ctrlShift(KC_RIGHT); break; */
-		/* bindSequenceTwo(KC_COMM, KC_V) && leader_sequence[2] == (KC_B): ctrlShift(KC_LEFT); break; */
-		/* bindSequenceTwo(KC_COMM, KC_D) && leader_sequence[2] == (KC_B): ctrl(KC_BSPC); break; */
-		/* bindSequenceTwo(KC_COMM, KC_D) && leader_sequence[2] == (KC_W): ctrl(KC_DEL); break; } */
-		
-		// Window / Split / Panel
-		// ⏎ w : ⌘ ]
-		/* bindSequenceTwo(KC_ENT, KC_W: tapL(CMD(KC_RBRC))) */
-
 #if !defined(UNICODE_ENABLE)
 		// Accented characters - macos - no unicode
 		case KC_QUOTE: tapL(OPT(KC_E)); break; // ´
