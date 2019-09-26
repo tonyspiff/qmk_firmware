@@ -48,7 +48,6 @@ void process_leading_sequence(void)
 		case KC_P: tapL(MEH(KC_F3)); break;
 		case KC_U: tapL(KC_F13); break;
 		case KC_N: layer_on(Numpad); endLeading(); break;
-		case KC_BSPACE: layer_on(Arrows); endLeading(); break;
 		case KC_SPC: tapL(KC_DOT); tapL(KC_SPC); break;
 		case KC_ENT: tapL(KC_DOT); tapL(KC_ENT); break;
 		case KC_V: isVimodeOn = true; endLeading(); break;

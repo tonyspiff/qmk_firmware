@@ -7,8 +7,7 @@ enum Layer
 {
 	Base = 0,
 	Numpad,
-	Function,
-	Arrows
+	Function
 };
 
 #endif
