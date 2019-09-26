@@ -12,6 +12,14 @@ bool vim_process_record_user(uint16_t keycode, keyrecord_t *record)
 	if (!isVimodeOn || !record->event.pressed)
 		return true;
 
+	switch (keycode)
+	{
+        case KC_LCTRL ... KC_RGUI:
+			// FALL THRU
+        case QK_ONE_SHOT_MOD ... QK_ONE_SHOT_MOD_MAX:
+			return true;
+	}
+
 	addToVimQueue(keycode);
 	return processQueue();
 }
@@ -35,6 +43,7 @@ bool processQueue(void)
 	bool shouldPassKeyThru = false;
 	bool shouldClearQueue = true;
 
+	// Mac Keyboard Shortcuts: https://support.apple.com/en-ca/HT201236
 	switch (vimQueue[0])
 	{
 		case KC_ESC: break;
@@ -44,17 +53,23 @@ bool processQueue(void)
 
 		case KC_SPACE: tap(KC_PGDOWN); break;
 		case KC_MINUS: tap(KC_PGUP); break;
-		case KC_A: tap(KC_RIGHT); isVimodeOn = false; break;
+
+		case KC_A:
+			if (isShiftOn)
+			{
+				clear_mods();
+				clear_oneshot_mods();
+				tap(CMD(KC_RIGHT));
+			}
+			else
+			{
+				tap(KC_RIGHT);
+			}
+
+			isVimodeOn = false;
+			break;
+
 		case KC_B: tap(OPT(KC_LEFT)); break;
-		case KC_H: tap(KC_LEFT); break;
-		case KC_I: isVimodeOn = false; break;
-		case KC_J: tap(KC_DOWN); break;
-		case KC_K: tap(KC_UP); break;
-		case KC_P: tap(CMD(KC_V)); break;
-		case KC_S: tap(KC_RIGHT); break;
-		case KC_U: tap(CMD(KC_Z)); break;
-		case KC_W: tap(OPT(KC_RIGHT)); break;
-		case KC_X: tap(KC_BSPACE); break;
 
 		case KC_C:
 			switch (vimQueue[1])
@@ -67,10 +82,11 @@ bool processQueue(void)
 
 		// TODO: Copy content before deleting
 		case KC_D:
-			// FIXME: Shift not working
 			if (isShiftOn)
 			{
-				tap(CMD(KC_DEL));
+				clear_mods();
+				clear_oneshot_mods();
+				tap(CTRL(KC_K));
 				break;
 			}
 
@@ -84,6 +100,14 @@ bool processQueue(void)
 			break;
 
 		case KC_G:
+			if (isShiftOn)
+			{
+				clear_mods();
+				clear_oneshot_mods();
+				tap(KC_END);
+				break;
+			}
+
 			switch (vimQueue[1])
 			{
 				case KC_A: tap(CMD(KC_RIGHT)); break;
@@ -93,7 +117,46 @@ bool processQueue(void)
 			}
 			break;
 
+		case KC_H: tap(KC_LEFT); break;
+
+		case KC_I:
+			if (isShiftOn)
+			{
+				clear_mods();
+				clear_oneshot_mods();
+				tap(CMD(KC_LEFT));
+			}
+
+			isVimodeOn = false;
+			break;
+
+		case KC_J: tap(KC_DOWN); break;
+		case KC_K: tap(KC_UP); break;
+		case KC_P: tap(CMD(KC_V)); break;
+		case KC_S: tap(KC_RIGHT); break;
+		case KC_U: tap(CMD(KC_Z)); break;
+		case KC_W: tap(OPT(KC_RIGHT)); break;
+
+		case KC_X:
+			if (isShiftOn)
+			{
+				clear_mods();
+				clear_oneshot_mods();
+				tap(KC_BSPACE);
+				break;
+			}
+
+			tap(KC_DEL);
+			break;
+
 		case KC_Y:
+			if (isShiftOn)
+			{
+				tap(CMD(KC_RIGHT));
+				tap(CMD(KC_C));
+				break;
+			}
+
 			switch (vimQueue[1])
 			{
 				case KC_Y: tap(CMD(KC_A)); tap(CMD(KC_C)); break;
