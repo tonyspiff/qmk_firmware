@@ -51,6 +51,8 @@ void process_leading_sequence(void)
 		case KC_SPC: tapL(KC_DOT); tapL(KC_SPC); break;
 		case KC_ENT: tapL(KC_DOT); tapL(KC_ENT); break;
 		case KC_V: isVimodeOn = true; endLeading(); break;
+		case KC_J: tapL(KC_DOWN); break;
+		case KC_K: tapL(KC_UP); break;
 
 		// One Shot Function Layer
 		case KC_F:
@@ -160,6 +162,8 @@ void process_leading_sequence(void)
 				case KC_D: tapL(LCAG(KC_F11)); break; // toDoist quick add
 				case KC_M: tapL(HYPR(KC_F4)); break; // eMojis
 				case KC_C: tapL(HYPR(KC_F5)); break; // Close notifications
+				case KC_X: tapL(HYPR(KC_F6)); break; // Close system specific dialogs
+				case KC_I: tapL(S(KC_ESC)); break; // ⇧ ⎋
 				case KC_LEAD: SEND_STRING("... "); endLeading(); break;
 			}
 			break;

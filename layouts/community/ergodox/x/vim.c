@@ -79,6 +79,7 @@ bool processQueue(void)
 			switch (vimQueue[1])
 			{
 				case KC_B: tap(OPT(KC_BSPC)); isVimodeOn = false; break;
+				case KC_C: tap(CMD(KC_RIGHT)); tap(CMD(KC_BSPC)); isVimodeOn = false; break;
 				case KC_W: tap(OPT(KC_DEL)); isVimodeOn = false; break;
 				case 0: shouldClearQueue = false; break;
 			}
@@ -120,6 +121,7 @@ bool processQueue(void)
 		case KC_J: tap(KC_DOWN); break;
 		case KC_K: tap(KC_UP); break;
 		case KC_P: tap(CMD(KC_V)); break;
+		case KC_R: tap(KC_DEL); isVimodeOn = false; break;
 		case KC_S: tap(KC_RIGHT); break;
 		case KC_U: tap(CMD(KC_Z)); break;
 		case KC_W: tap(OPT(KC_RIGHT)); break;

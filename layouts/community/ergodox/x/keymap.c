@@ -26,22 +26,22 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] =
 [Base] = LAYOUT_ergodox
 (
 	// left hand
-	_______,		KC_F1,      KC_F2,   	KC_F3,		KC_F4,   	KC_F5,	KC_F11,
+	RESET,			KC_F1,      KC_F2,   	KC_F3,		KC_F4,   	KC_F5,	KC_F11,
 	KC_GRV,			KC_QUOTE,	KC_COMM,	KC_LEAD,	KC_P,   	KC_Y,   CMD(OPT(KC_V)),
 	KC_ESC,			KC_A,       KC_O,		KC_E,		KC_U,   	KC_I,
 	OSM(MOD_LSFT),	KC_COLON,	KC_Q,   	KC_J,		KC_K,   	KC_X,   HYPR(KC_F13),
-	KC_OPT,			KC_CMD,	    KC_CTRL,	MO(Numpad),	KC_TAB,
+	KC_OPT,			KC_CMD,	    KC_CTRL,	KC_ESC,		KC_TAB,
 
 				KC_LEFT,	KC_RGHT,
 							KC_F16,
 	KC_SPC,		KC_F13,		MEH(KC_SPC),
 
 	// right hand
-	KC_F12,			KC_F6, 		KC_F7, 		KC_F8,   	KC_F9,   	KC_F10,   	KC_CAPS,
+	KC_F12,			KC_F6, 		KC_F7, 		KC_F8,   	KC_F9,   	KC_F10,   	RESET,
 	G(KC_Y),		KC_F,	 	KC_G, 		KC_C,		KC_R,   	KC_L,		KC_SLSH,
 					KC_D,   	KC_H, 		KC_T,  		KC_N,   	KC_S,		KC_MINS,
 	G(KC_TAB),		KC_B,   	KC_M, 		KC_W,   	KC_V,   	KC_Z,		OSM(MOD_RSFT),
-								KC_ENT,		MO(Numpad),	KC_CTRL,  	KC_CMD,		KC_OPT,
+								KC_ENT,	OSM(MOD_RSFT),	KC_CTRL,  	KC_CMD,		KC_OPT,
 
 	KC_MPLY,		KC_MNXT,
 	KC_F16,
@@ -77,9 +77,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] =
 (
 	// Left Hand
 	_______,	_______,	_______,	_______,	_______,	_______,	_______,
-	_______,	_______,	_______,	_______,	_______,	_______,	_______,
+	_______,	_______,	KC_F12,		KC_F11,		_______,	_______,	_______,
 	TO(Base),	KC_F3,		KC_F2,		KC_F1,		KC_F10,		_______,
-	_______,	KC_F13,		KC_F12, 	KC_F11,		_______,	_______,	_______,
+	_______,	KC_F13,		_______, 	KC_F11,		_______,	_______,	_______,
 	_______,	_______,	_______,	_______,	_______,
 
 				_______,	_______,
@@ -90,7 +90,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] =
 	_______,	_______,	_______,	_______,	_______,	_______,	_______,
 	_______,	_______,	KC_F7,		KC_F8,		KC_F9,		_______,	_______,
 				_______, 	KC_F4,   	KC_F5,   	KC_F6,   	_______,	_______,
-	_______,	_______,	KC_F1,		KC_F2,		KC_F3,		_______,	_______,
+	_______,	_______,	KC_F1,		KC_F2,		KC_F3,		_______,	KC_CAPS,
 							_______,	KC_F10,		_______,	_______,	_______,
 
 	_______,	_______,
