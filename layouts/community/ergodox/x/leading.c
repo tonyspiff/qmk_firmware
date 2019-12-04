@@ -73,7 +73,7 @@ void process_leading_sequence(void)
 				case KC_P: tapL(MEH(KC_F12)); break; // 1Password
 				case KC_M: tapL(LCAG(KC_F1)); break; // Messaging App
 				case KC_G: tapL(CMD(KC_GRAVE)); break; // ⌘ `
-				case KC_C: press(KC_CMD); tapL(KC_TAB); isCmdTabOn = true; break; // Sticky ⌘ ↹
+				case KC_C: press(KC_CMD); tapL(KC_TAB); stickyKey = KC_CMD; break; // Sticky ⌘ ↹
 				case KC_R: tapL(LCAG(KC_F5)); break; // tRansmission
 				case KC_D: tapL(LCAG(KC_F4)); break; // toDoist
 				case KC_I: tapL(HYPR(KC_F3)); break; // iTunes Mini Player - Alfred
