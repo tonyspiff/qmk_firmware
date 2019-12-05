@@ -1,6 +1,7 @@
 #include "macros.h"
 #include "tap.h"
 #include "mods.h"
+#include <string.h>
 
 #define MODS_MAX 4
 uint16_t stickyMods[MODS_MAX] = { 0 };
