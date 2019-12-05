@@ -12,7 +12,7 @@
 bool vim_process_record_user(uint16_t keycode, keyrecord_t *record);
 void addToVimQueue(uint16_t keycode);
 void clearVimQueue(void);
-bool processQueue(void);
+bool processQueue(bool);
 
 extern bool isVimodeOn;
 
