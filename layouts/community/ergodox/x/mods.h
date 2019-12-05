@@ -7,6 +7,7 @@
 #ifndef MODS_X_H
 #define MODS_X_H
 
+#define KC_SHIFT KC_LSFT
 #define KC_CMD KC_LCMD
 #define CMD(kc) LCMD(kc)
 #define KC_OPT KC_LALT

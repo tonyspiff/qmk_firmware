@@ -35,6 +35,19 @@ void tapUnicodeL(uint16_t code)
 }
 #endif
 
+void tapModComboL(uint16_t keycode, uint16_t mods[], uint8_t size)
+{
+	stick(mods, size);
+	
+	if (keycode != KC_BSPC)
+	{
+		tap(keycode);
+		unstickAll();
+	}
+
+	endLeading();
+}
+
 void process_leading_sequence(void)
 {
 	if (!leading)
@@ -73,7 +86,7 @@ void process_leading_sequence(void)
 				case KC_P: tapL(MEH(KC_F12)); break; // 1Password
 				case KC_M: tapL(LCAG(KC_F1)); break; // Messaging App
 				case KC_G: tapL(CMD(KC_GRAVE)); break; // ⌘ `
-				case KC_C: press(KC_CMD); tapL(KC_TAB); stickyKey = KC_CMD; break; // Sticky ⌘ ↹
+				case KC_C: { uint16_t mods[] = { KC_CMD }; stick(mods, 1); tapL(KC_TAB); } break; // Sticky ⌘ ↹
 				case KC_R: tapL(LCAG(KC_F5)); break; // tRansmission
 				case KC_D: tapL(LCAG(KC_F4)); break; // toDoist
 				case KC_I: tapL(HYPR(KC_F3)); break; // iTunes Mini Player - Alfred
@@ -138,7 +151,10 @@ void process_leading_sequence(void)
 		// ⌘ - Command
 		case KC_C:
 			if (leader_sequence[1])
-				tapL(CMD(leader_sequence[1]));
+			{
+				uint16_t mods[] = { KC_CMD };
+				tapModComboL(leader_sequence[1], mods, 1);
+			}
 			/* case KC_J: tapL(CMD(KC_DOWN)); break; */
 			/* case KC_K: tapL(CMD(KC_UP)); break; */
 			/* case KC_H: tapL(CMD(KC_LEFT)); break; */
@@ -183,7 +199,10 @@ void process_leading_sequence(void)
 		// ⌘ ⇧
 		case (KC_L):
 			if (leader_sequence[1])
-				tapL(CMD(S(leader_sequence[1])));
+			{
+				uint16_t mods[] = { KC_CMD, KC_SHIFT };
+				tapModComboL(leader_sequence[1], mods, 2);
+			}
 			/* case KC_J: tapL(CMD(S(KC_DOWN))); break; */
 			/* case KC_K: tapL(CMD(S(KC_UP))); break; */
 			/* case KC_H: tapL(CMD(S(KC_LEFT))); break; */
@@ -193,7 +212,10 @@ void process_leading_sequence(void)
 		// ⌃ - contRol
 		case (KC_R):
 			if (leader_sequence[1])
-				tapL(CTRL(leader_sequence[1]));
+			{
+				uint16_t mods[] = { KC_CTRL };
+				tapModComboL(leader_sequence[1], mods, 1);
+			}
 			/* case KC_J: tapL(C(KC_DOWN)); break; */
 			/* case KC_K: tapL(C(KC_UP)); break; */
 			/* case KC_H: tapL(C(KC_LEFT)); break; */
@@ -203,19 +225,28 @@ void process_leading_sequence(void)
 		// ⌥  - Option
 		case KC_O:
 			if (leader_sequence[1])
-				tapL(OPT(leader_sequence[1]));
+			{
+				uint16_t mods[] = { KC_OPT };
+				tapModComboL(leader_sequence[1], mods, 1);
+			}
 			break;
 
 		// ⌘ ⌥  - Command Option
 		case KC_Q:
 			if (leader_sequence[1])
-				tapL(CMD(OPT(leader_sequence[1])));
+			{
+				uint16_t mods[] = { KC_CMD, KC_OPT };
+				tapModComboL(leader_sequence[1], mods, 2);
+			}
 			break;
 
 		// ⌘ ⌃ - Command Control
 		case KC_A:
 			if (leader_sequence[1])
-				tapL(CMD(CTRL(leader_sequence[1])));
+			{
+				uint16_t mods[] = { KC_CMD, KC_CTRL };
+				tapModComboL(leader_sequence[1], mods, 2);
+			}
 			break;
 			
 		// Media: mp-play mn-next mr-previous mj-volDown mk-volUp mm-mute
