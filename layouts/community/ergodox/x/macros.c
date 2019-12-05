@@ -8,12 +8,7 @@ uint16_t stickyMods[MODS_MAX] = { 0 };
 
 bool isSticky(void)
 {
-	uint16_t *p = stickyMods;
-
-	while (*p++)
-		return true;
-
-	return false;
+	return stickyMods[0];
 }
 
 bool macros_process_record_user(uint16_t keycode, keyrecord_t *record)
