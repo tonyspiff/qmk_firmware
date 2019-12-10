@@ -20,7 +20,8 @@ bool vim_process_record_user(uint16_t keycode, keyrecord_t *record)
 			return true;
 	}
 
-	addToVimQueue(keycode);
+	if (record->event.pressed)
+		addToVimQueue(keycode);
 
 	return processQueue(record->event.pressed);
 }
@@ -42,28 +43,19 @@ void clearVimQueue(void)
 	memset(vimQueue, 0, sizeof(vimQueue));
 }
 
-void handleKeycode(uint16_t keycode, bool isPressed, bool shouldClearMods, bool canRepeat)
+void clearModsAndTap(uint16_t keycode)
 {
-	if (isPressed)
-	{
-		canRepeat ? press(keycode) : tap(keycode);
-	}
-	else if (canRepeat)
-	{
-		release(keycode);
-	}
-
-	if (shouldClearMods && !isPressed)
-	{
-		clear_mods();
-		clear_oneshot_mods();
-	}
+	clear_mods();
+	clear_oneshot_mods();
+	tap(keycode);
 }
 
 bool processQueue(bool isPressed)
 {
 	bool shouldPassKeyThru = false;
 	bool shouldClearQueue = true;
+
+	#define press_release(kc) isPressed ? press(kc) : release(kc); shouldClearQueue = !isPressed
 
 	// Mac Keyboard Shortcuts: https://support.apple.com/en-ca/HT201236
 	switch (vimQueue[0])
@@ -73,83 +65,83 @@ bool processQueue(bool isPressed)
 			 // FALL THRU
 		case KC_ENT: isVimodeOn = false; shouldPassKeyThru = true; break;
 
-		case KC_SPACE: handleKeycode(KC_PGDOWN, isPressed, false, true); break;
-		case KC_MINUS: handleKeycode(KC_PGUP, isPressed, false, true); break;
+		case KC_SPACE: press_release(KC_PGDOWN); break;
+		case KC_MINUS: press_release(KC_PGUP); break;
 
 		case KC_A:
 			if (isShiftOn)
-				handleKeycode(CMD(KC_RIGHT), isPressed, true, false);
+				clearModsAndTap(CMD(KC_RIGHT));
 			else
-				handleKeycode(KC_RIGHT, isPressed, false, true);
+				tap(KC_RIGHT);
 
 			isVimodeOn = false;
 			break;
 
-		case KC_B: handleKeycode(OPT(KC_LEFT), isPressed, false, true); break;
+		case KC_B: press_release(OPT(KC_LEFT)); break;
 
 		case KC_C:
 			switch (vimQueue[1])
 			{
-				case KC_B: handleKeycode(OPT(KC_BSPC), isPressed, false, false); isVimodeOn = false; break;
-				case KC_C: handleKeycode(CMD(KC_RIGHT), isPressed, false, false); handleKeycode(CMD(KC_BSPC), isPressed, false, false); isVimodeOn = false; break;
-				case KC_W: handleKeycode(OPT(KC_DEL), isPressed, false, false); isVimodeOn = false; break;
+				case KC_B: tap(OPT(KC_BSPC)); isVimodeOn = false; break;
+				case KC_C: tap(CMD(KC_RIGHT)); tap(CMD(KC_BSPC)); isVimodeOn = false; break;
+				case KC_W: tap(OPT(KC_DEL)); isVimodeOn = false; break;
 				case 0: shouldClearQueue = false; break;
 			}
 			break;
 
 		// TODO: Copy content before deleting
 		case KC_D:
-			if (isShiftOn) { handleKeycode(CTRL(KC_K), isPressed, true, false); break; }
+			if (isShiftOn) { clearModsAndTap(CTRL(KC_K)); break; }
 
 			switch (vimQueue[1])
 			{
-				case KC_B: handleKeycode(OPT(KC_BSPC), isPressed, false, false); break;
-				case KC_D: handleKeycode(CMD(KC_RIGHT), isPressed, false, false); handleKeycode(CMD(KC_BSPC), isPressed, false, false); break;
-				case KC_W: handleKeycode(OPT(KC_DEL), isPressed, false, false); break;
+				case KC_B: tap(OPT(KC_BSPC)); break;
+				case KC_D: tap(CMD(KC_RIGHT)); tap(CMD(KC_BSPC)); break;
+				case KC_W: tap(OPT(KC_DEL)); break;
 				case 0: shouldClearQueue = false; break;
 			}
 			break;
 
 		case KC_G:
-			if (isShiftOn) { handleKeycode(KC_END, isPressed, true, false); break; }
+			if (isShiftOn) { clearModsAndTap(KC_END); break; }
 
 			switch (vimQueue[1])
 			{
-				case KC_A: handleKeycode(CMD(KC_RIGHT), isPressed, false, false); break;
-				case KC_Z: handleKeycode(CMD(KC_LEFT), isPressed, false, false); break;
-				case KC_G: handleKeycode(KC_HOME, isPressed, false, false); break;
+				case KC_A: tap(CMD(KC_RIGHT)); break;
+				case KC_Z: tap(CMD(KC_LEFT)); break;
+				case KC_G: tap(KC_HOME); break;
 				case 0: shouldClearQueue = false; break;
 			}
 			break;
 
-		case KC_H: handleKeycode(KC_LEFT, isPressed, false, true); break;
+		case KC_H: press_release(KC_LEFT); break;
 
 		case KC_I:
-			if (isShiftOn) { handleKeycode(CMD(KC_LEFT), isPressed, true, false); }
+			if (isShiftOn) { clearModsAndTap(CMD(KC_LEFT)); }
 
 			isVimodeOn = false;
 			break;
 
-		case KC_J: handleKeycode(KC_DOWN, isPressed, false, true); break;
-		case KC_K: handleKeycode(KC_UP, isPressed, false, true); break;
-		case KC_P: handleKeycode(CMD(KC_V), isPressed, false, false); break;
-		case KC_R: handleKeycode(KC_DEL, isPressed, false, false); isVimodeOn = false; break;
-		case KC_S: handleKeycode(KC_RIGHT, isPressed, false, true); break;
-		case KC_U: handleKeycode(CMD(KC_Z), isPressed, false, true); break;
-		case KC_W: handleKeycode(OPT(KC_RIGHT), isPressed, false, true); break;
+		case KC_J: press_release(KC_DOWN); break;
+		case KC_K: press_release(KC_UP); break;
+		case KC_P: tap(CMD(KC_V)); break;
+		case KC_R: tap(KC_DEL); isVimodeOn = false; break;
+		case KC_S: press_release(KC_RIGHT); break;
+		case KC_U: press_release(CMD(KC_Z)); break;
+		case KC_W: press_release(OPT(KC_RIGHT)); break;
 
 		case KC_X:
-			if (isShiftOn) { handleKeycode(KC_BSPACE, isPressed, true, true); break; }
+			if (isShiftOn) { clearModsAndTap(KC_BSPACE); break; }
 
-			handleKeycode(KC_DEL, isPressed, false, true);
+			tap(KC_DEL);
 			break;
 
 		case KC_Y:
-			if (isShiftOn) { handleKeycode(CMD(KC_RIGHT), isPressed, false, false); handleKeycode(CMD(KC_C), isPressed, false, false); break; }
+			if (isShiftOn) { tap(CMD(KC_RIGHT)); tap(CMD(KC_C)); break; }
 
 			switch (vimQueue[1])
 			{
-				case KC_Y: handleKeycode(CMD(KC_A), isPressed, false, false); handleKeycode(CMD(KC_C), isPressed, false, false); break;
+				case KC_Y: tap(CMD(KC_A)); tap(CMD(KC_C)); break;
 				case 0: shouldClearQueue = false; break;
 			}
 			break;
