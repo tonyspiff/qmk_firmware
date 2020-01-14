@@ -60,10 +60,11 @@ bool processQueue(bool isPressed)
 	// Mac Keyboard Shortcuts: https://support.apple.com/en-ca/HT201236
 	switch (vimQueue[0])
 	{
-		case KC_ESC: break;
 		case KC_TAB:
 			 // FALL THRU
-		case KC_ENT: isVimodeOn = false; shouldPassKeyThru = true; break;
+		case KC_ENT: shouldPassKeyThru = true; 
+			 // FALL THRU
+		case KC_ESC: isVimodeOn = false; break;
 
 		case KC_SPACE: press_release(KC_PGDOWN); break;
 		case KC_MINUS: press_release(KC_PGUP); break;
@@ -131,9 +132,9 @@ bool processQueue(bool isPressed)
 		case KC_W: press_release(OPT(KC_RIGHT)); break;
 
 		case KC_X:
-			if (isShiftOn) { clearModsAndTap(KC_BSPACE); break; }
+			if (isShiftOn) { press_release(KC_BSPACE); break; }
 
-			tap(KC_DEL);
+			press_release(KC_DEL);
 			break;
 
 		case KC_Y:
