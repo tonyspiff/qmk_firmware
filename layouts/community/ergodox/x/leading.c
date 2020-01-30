@@ -125,7 +125,7 @@ void process_leading_sequence(void)
 				case KC_H: tapL(KC_HASH); break; // Hash
 				case KC_T: tapL(KC_TILDE); break; // Tilde
 				case KC_S: tapL(KC_BSLS); break; // backSlash
-				case KC_B: tapL(KC_LBRACKET); break; // Brackets
+				case KC_B: tapL(KC_LBRACKET); break; // Bracket
 				case KC_M: tapL(KC_AMPR); break; // aMpersand
 				case KC_V: tapL(KC_PIPE); break; // Vertical bar
 				case KC_Z: tapL(KC_RBRACKET); break;
@@ -136,14 +136,18 @@ void process_leading_sequence(void)
 		case KC_W:
 			switch (leader_sequence[1])
 			{
+				case KC_B: tapL(KC_RBRACKET); break; // Bracket
+				case KC_P: tapL(KC_RPRN); break; // Parenthesis
+				case KC_C: tapL(KC_RIGHT_CURLY_BRACE); break; // Curly brace
 				case KC_E: tapL(KC_LPRN); tapL(KC_RPRN); tapL(KC_LEFT); break; // pair of parenthesEs
 				case KC_U: tapL(KC_LEFT_CURLY_BRACE); tapL(KC_RIGHT_CURLY_BRACE); tapL(KC_LEFT); break; // pair of cUrly braces
 				case KC_O: tapL(KC_LBRACKET); tapL(KC_RBRACKET); tapL(KC_LEFT); break; // pair of crOtchets
 				case KC_A: tapL(KC_DOUBLE_QUOTE); tapL(KC_DOUBLE_QUOTE); tapL(KC_LEFT); break; // pair of double quotes
-				case KC_LEAD: tapL(KC_DOT); tapL(KC_DOT); break;
-				case KC_COMM: tapL(KC_LEFT_ANGLE_BRACKET); tapL(KC_RIGHT_ANGLE_BRACKET); tapL(KC_LEFT); break;
+				case KC_LEAD: tapL(KC_DOT); tapL(KC_DOT); break; // pair of dots
+				case KC_COMM: tapL(KC_LEFT_ANGLE_BRACKET); tapL(KC_RIGHT_ANGLE_BRACKET); tapL(KC_LEFT); break; // pair of angle brackets
 				case KC_QUOTE: tapL(KC_QUOTE); tapL(KC_QUOTE); tapL(KC_LEFT); break; // pair of quotes
 				case KC_GRAVE: tapL(KC_GRAVE); tapL(KC_GRAVE); tapL(KC_LEFT); break; // pair of grave accents
+				case KC_D: tapL(KC_DLR); tapL(KC_0); tapL(KC_DOT); break; // $0.
 			}
 			break;
 
