@@ -14,7 +14,9 @@
 
 enum Keycode
 {
-	KC_UNUSED = SAFE_RANGE
+	KC_UNUSED = SAFE_RANGE,
+	KC_COMM_SPC,
+	KC_COMM_ENT
 };
 
 #define SHUTDOWN LCAG(KC_EJCT)
@@ -27,7 +29,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] =
 (
 	// left hand
 	RESET,			KC_F1,      KC_F2,   	KC_F3,		KC_F4,   	KC_F5,	KC_F11,
-	KC_GRV,			KC_QUOTE,	KC_COMM,	KC_LEAD,	KC_P,   	KC_Y,   CMD(OPT(KC_V)),
+	KC_GRV,			KC_QUOTE,	OSL(Symbol),KC_LEAD,	KC_P,   	KC_Y,   CMD(OPT(KC_V)),
 	KC_ESC,			KC_A,       KC_O,		KC_E,		KC_U,   	KC_I,
 	OSM(MOD_LSFT),	KC_COLON,	KC_Q,   	KC_J,		KC_K,   	KC_X,   HYPR(KC_F13),
 	KC_OPT,			KC_CMD,	    KC_CTRL,	KC_ESC,		KC_TAB,
@@ -46,6 +48,31 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] =
 	KC_MPLY,		KC_MNXT,
 	KC_F16,
 	CTRL(KC_F2),	_______,	KC_BSPC
+),
+
+[Symbol] = LAYOUT_ergodox
+(
+	// Left Hand
+	RESET,		_______,	_______,	_______,	_______,	_______,	_______,
+	_______,	KC_DQUO,	_______,	KC_LABK,	KC_LPRN,	KC_RPRN,	_______,
+	TO(Base),	KC_ASTR,	KC_0,		KC_EQL,		KC_PLUS,	KC_1,
+	_______,	_______,	KC_QUES,	_______,	_______,	KC_EXLM,	_______,
+	_______,	_______,	_______,	_______,	_______,
+
+					_______,	_______,
+								_______,
+	KC_COMM_SPC,	_______,	_______,
+
+	// Right Hand
+	_______,	_______,	_______,	_______,	_______,	_______,	RESET,
+	_______,	KC_CIRC,	KC_AT,		KC_LCBR,	KC_PERC,	KC_RCBR,	_______,
+				KC_DLR,  	KC_HASH,   	KC_TILD,  	KC_SCLN,   	KC_BSLS,   	_______,
+	_______,	KC_LBRC,	KC_AMPR,	_______,	KC_PIPE,	KC_RBRC,	_______,
+							KC_COMM_ENT,_______,	_______,	_______,	_______,
+
+	_______,	_______,
+	_______,
+	_______,	_______,	KC_COMM
 ),
 
 [Numpad] = LAYOUT_ergodox
@@ -118,6 +145,16 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record)
 
 	switch (keycode)
 	{
+		case KC_COMM_SPC:
+			tap(KC_COMM);
+			tap(KC_SPC);
+			break;
+
+		case KC_COMM_ENT:
+			tap(KC_COMM);
+			tap(KC_ENT);
+			break;
+
 		case KC_ESC:
 			if (get_oneshot_mods() && !has_oneshot_mods_timed_out())
 			{

@@ -6,6 +6,7 @@
 enum Layer
 {
 	Base = 0,
+	Symbol,
 	Numpad,
 	Function
 };
