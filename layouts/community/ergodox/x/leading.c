@@ -2,8 +2,17 @@
 #include "mods.h"
 #include "vim.h"
 
+bool isSymbolLeading = false;
+
+void startSymbolLeading()
+{
+	isSymbolLeading = true;
+	qk_leader_start();
+}
+
 void endLeading()
 {
+	isSymbolLeading = false;
 	leading = false;
 	leader_end();
 }
@@ -41,7 +50,9 @@ void tapModComboL(uint16_t keycode, uint16_t mods[], uint8_t size)
 	
 	if (keycode != KC_BSPC)
 	{
-		tap(keycode);
+		keycode == KC_SYMB
+			? tap(KC_COMM)
+			: tap(keycode);
 		unstickAll();
 	}
 
@@ -52,7 +63,49 @@ void process_leading_sequence(void)
 {
 	if (!leading)
 		return;
-	
+
+	if (isSymbolLeading) 
+	{
+		switch (leader_sequence[0])
+		{
+			case 0: return;
+			case KC_ESC: endLeading(); break;
+			case KC_LEAD: tapL(KC_RIGHT_ANGLE_BRACKET); break;
+			case KC_SYMB: tapL(KC_COMM); break;
+			case KC_QUOTE: tapL(KC_DOUBLE_QUOTE); break; // double quote
+			case KC_P: tapL(KC_LPRN); break; // Parenthesis
+			case KC_Y: tapL(KC_RPRN); break;
+			case KC_A: tapL(KC_ASTR); break; // Asterisk
+			case KC_O: tapL(KC_0); break;
+			case KC_E: tapL(KC_EQL); break; // Equal
+			case KC_U: tapL(KC_PLUS); break; // plUs
+			case KC_I: tapL(KC_1); break;
+			case KC_COLON: tapL(KC_SCOLON); break;
+			case KC_N: tapL(KC_SCOLON); break; // semicoloN
+			case KC_Q: tapL(KC_QUES); break; // Question mark
+			case KC_J: tapL(KC_DOWN); break;
+			case KC_K: tapL(KC_UP); break;
+			case KC_X: tapL(KC_EXLM); break; // eXclamation mark
+			case KC_F: tapL(KC_CIRC); break; // circumFlex
+			case KC_G: tapL(KC_AT); break; // at sigGn
+			case KC_C: tapL(KC_LEFT_CURLY_BRACE); break; // Curly brace
+			case KC_R: tapL(KC_PERC); break; // peRcent
+			case KC_L: tapL(KC_RIGHT_CURLY_BRACE); break;
+			case KC_D: tapL(KC_DLR); break; // Dollar
+			case KC_H: tapL(KC_HASH); break; // Hash
+			case KC_T: tapL(KC_TILDE); break; // Tilde
+			case KC_S: tapL(KC_BSLS); break; // backSlash
+			case KC_B: tapL(KC_LBRACKET); break; // Bracket
+			case KC_M: tapL(KC_AMPR); break; // aMpersand
+			case KC_V: tapL(KC_PIPE); break; // Vertical bar
+			case KC_Z: tapL(KC_RBRACKET); break;
+			case KC_SPC: tap(KC_COMM); tapL(KC_SPC); break;
+			case KC_ENT: tap(KC_COMM); tapL(KC_ENT); break;
+		}
+
+		return;
+	}
+
 	switch (leader_sequence[0])
 	{
 		case 0: return;
@@ -61,8 +114,8 @@ void process_leading_sequence(void)
 		case KC_P: tapL(MEH(KC_F3)); break;
 		case KC_U: tapL(KC_F13); break;
 		case KC_N: layer_on(Numpad); endLeading(); break;
-		case KC_SPC: tapL(KC_DOT); tapL(KC_SPC); break;
-		case KC_ENT: tapL(KC_DOT); tapL(KC_ENT); break;
+		case KC_SPC: tap(KC_DOT); tapL(KC_SPC); break;
+		case KC_ENT: tap(KC_DOT); tapL(KC_ENT); break;
 		case KC_V: isVimodeOn = true; endLeading(); break;
 		case KC_J: tapL(KC_DOWN); break;
 		case KC_K: tapL(KC_UP); break;
@@ -97,6 +150,7 @@ void process_leading_sequence(void)
 			}
 			break;
 			
+		// FIXME: Deprecate this in favour of KC_SYMB
 		// Symbols
 		case KC_H:
 			switch (leader_sequence[1])
@@ -144,7 +198,7 @@ void process_leading_sequence(void)
 				case KC_O: tapL(KC_LBRACKET); tapL(KC_RBRACKET); tapL(KC_LEFT); break; // pair of crOtchets
 				case KC_A: tapL(KC_DOUBLE_QUOTE); tapL(KC_DOUBLE_QUOTE); tapL(KC_LEFT); break; // pair of double quotes
 				case KC_LEAD: tapL(KC_DOT); tapL(KC_DOT); break; // pair of dots
-				case KC_COMM: tapL(KC_LEFT_ANGLE_BRACKET); tapL(KC_RIGHT_ANGLE_BRACKET); tapL(KC_LEFT); break; // pair of angle brackets
+				case KC_SYMB: tapL(KC_LEFT_ANGLE_BRACKET); tapL(KC_RIGHT_ANGLE_BRACKET); tapL(KC_LEFT); break; // pair of angle brackets
 				case KC_QUOTE: tapL(KC_QUOTE); tapL(KC_QUOTE); tapL(KC_LEFT); break; // pair of quotes
 				case KC_GRAVE: tapL(KC_GRAVE); tapL(KC_GRAVE); tapL(KC_LEFT); break; // pair of grave accents
 				case KC_D: tapL(KC_DLR); tapL(KC_0); tapL(KC_DOT); break; // $0.
@@ -272,7 +326,7 @@ void process_leading_sequence(void)
 		case KC_GRAVE: tapL(OPT(KC_GRAVE)); break; // `
 		case KC_MINUS: tapL(OPT(KC_N)); break; // ˜
 		case KC_X: tapL(OPT(KC_I)); break; // ˆ
-		case KC_COMM: tapL(OPT(KC_C)); break; // ç
+		case KC_SYMB: tapL(OPT(KC_C)); break; // ç
 		case KC_COLON: tapL(OPT(KC_U)); break; // ¨
 #else	
 		// Unicode, Accented characters

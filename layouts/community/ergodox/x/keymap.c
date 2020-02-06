@@ -12,11 +12,6 @@
 
 #define X_____X KC_NO
 
-enum Keycode
-{
-	KC_UNUSED = SAFE_RANGE
-};
-
 #define SHUTDOWN LCAG(KC_EJCT)
 #define LOCKSCR CTRL(RSFT(KC_PWR))
 
@@ -27,7 +22,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] =
 (
 	// left hand
 	RESET,			KC_F1,      KC_F2,   	KC_F3,		KC_F4,   	KC_F5,	KC_F11,
-	KC_GRV,			KC_QUOTE,	KC_COMM,	KC_LEAD,	KC_P,   	KC_Y,   CMD(OPT(KC_V)),
+	KC_GRV,			KC_QUOTE,	KC_SYMB,	KC_LEAD,	KC_P,   	KC_Y,   CMD(OPT(KC_V)),
 	KC_ESC,			KC_A,       KC_O,		KC_E,		KC_U,   	KC_I,
 	OSM(MOD_LSFT),	KC_COLON,	KC_Q,   	KC_J,		KC_K,   	KC_X,   HYPR(KC_F13),
 	KC_OPT,			KC_CMD,	    KC_CTRL,	KC_ESC,		KC_TAB,
@@ -118,6 +113,21 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record)
 
 	switch (keycode)
 	{
+		case KC_SYMB:
+			if (leading) 
+				return true;
+
+			if (isShiftOn)
+			{
+				tap(KC_LEFT_ANGLE_BRACKET);
+				clear_oneshot_mods();
+			}
+			else
+			{
+				startSymbolLeading();
+			}
+			return false;
+
 		case KC_ESC:
 			if (get_oneshot_mods() && !has_oneshot_mods_timed_out())
 			{

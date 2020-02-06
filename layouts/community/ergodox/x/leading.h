@@ -7,6 +7,7 @@
 
 LEADER_EXTERNS();
 
+extern void startSymbolLeading(void);
 extern void endLeading(void);
 extern void process_leading_sequence(void);
 
