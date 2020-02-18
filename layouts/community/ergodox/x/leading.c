@@ -307,12 +307,21 @@ void process_leading_sequence(void)
 			}
 			break;
 			
-		// ⌘ ⎈ ⌥ - Command Control Option
+		// ⌘ ⎈ ⌥ - Command Control Option, aka Super
 		case KC_B:
 			if (leader_sequence[1])
 			{
 				uint16_t mods[] = { KC_CMD, KC_CTRL, KC_OPT };
 				tapModComboL(leader_sequence[1], mods, 3);
+			}
+			break;
+
+		// ⌘ ⎈ ⌥ ⇧ - Command Control Option Shift, aka Hyper
+		case KC_D:
+			if (leader_sequence[1])
+			{
+				uint16_t mods[] = { KC_CMD, KC_CTRL, KC_OPT, KC_SHIFT };
+				tapModComboL(leader_sequence[1], mods, 4);
 			}
 			break;
 
