@@ -311,7 +311,7 @@ void process_leading_sequence(void)
 		case KC_B:
 			if (leader_sequence[1])
 			{
-				uint16_t mods[] = { KC_CMD, KC_OPT, KC_CTRL };
+				uint16_t mods[] = { KC_CMD, KC_CTRL, KC_OPT };
 				tapModComboL(leader_sequence[1], mods, 3);
 			}
 			break;
