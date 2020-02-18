@@ -231,8 +231,8 @@ void process_leading_sequence(void)
 				case KC_Y: tapL(CMD(KC_A)); tapL(CMD(KC_C)); break; // Yank all
 				case KC_E: tapL(CMD(S(KC_LEFT))); break; // ⌘ ⇧ ←
 				case KC_T: tapL(CMD(S(KC_RIGHT))); break; // ⌘ ⇧ →
-				case KC_H: tapL(CMD(CTRL(KC_LEFT))); break; // ⌘ ⌃ ←
-				case KC_S: tapL(CMD(CTRL(KC_RIGHT))); break; // ⌘ ⌃ →
+				case KC_H: tapL(CMD(CTRL(KC_LEFT))); break; // ⌘ ⎈ ←
+				case KC_S: tapL(CMD(CTRL(KC_RIGHT))); break; // ⌘ ⎈ →
 				case KC_D: tapL(LCAG(KC_F11)); break; // toDoist quick add
 				case KC_M: tapL(HYPR(KC_F4)); break; // eMojis
 				case KC_C: tapL(HYPR(KC_F5)); break; // Close notifications
@@ -267,7 +267,7 @@ void process_leading_sequence(void)
 			/* case KC_S: tapL(CMD(S(KC_RIGHT))); break; */
 			break;
 			
-		// ⌃ - contRol
+		// ⎈ - contRol
 		case (KC_R):
 			if (leader_sequence[1])
 			{
@@ -280,7 +280,7 @@ void process_leading_sequence(void)
 			/* case KC_S: tapL(C(KC_RIGHT)); break; */
 			break;
 			
-		// ⌥  - Option
+		// ⌥ - Option
 		case KC_O:
 			if (leader_sequence[1])
 			{
@@ -289,7 +289,7 @@ void process_leading_sequence(void)
 			}
 			break;
 
-		// ⌘ ⌥  - Command Option
+		// ⌘ ⌥ - Command Option
 		case KC_Q:
 			if (leader_sequence[1])
 			{
@@ -298,7 +298,7 @@ void process_leading_sequence(void)
 			}
 			break;
 
-		// ⌘ ⌃ - Command Control
+		// ⌘ ⎈ - Command Control
 		case KC_A:
 			if (leader_sequence[1])
 			{
