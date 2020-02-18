@@ -307,6 +307,15 @@ void process_leading_sequence(void)
 			}
 			break;
 			
+		// ⌘ ⎈ ⌥ - Command Control Option
+		case KC_B:
+			if (leader_sequence[1])
+			{
+				uint16_t mods[] = { KC_CMD, KC_OPT, KC_CTRL };
+				tapModComboL(leader_sequence[1], mods, 3);
+			}
+			break;
+
 		// Media: mp-play mn-next mr-previous mj-volDown mk-volUp mm-mute
 		case KC_M:
 			switch (leader_sequence[1])
