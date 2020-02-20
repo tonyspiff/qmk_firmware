@@ -101,6 +101,7 @@ void process_leading_sequence(void)
 			case KC_Z: tapL(KC_RBRACKET); break;
 			case KC_SPC: tap(KC_COMM); tapL(KC_SPC); break;
 			case KC_ENT: tap(KC_COMM); tapL(KC_ENT); break;
+			case KC_BSPC: tapL(S(KC_SPC)); break; // ⇧ ‿
 		}
 
 		return;
