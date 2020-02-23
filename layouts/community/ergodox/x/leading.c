@@ -136,6 +136,8 @@ void process_leading_sequence(void)
 				case KC_T: tapL(CMD(KC_TAB)); break; // ⌘ ↹
 				case KC_H: tapL(MEH(KC_F1)); break; // Firefox
 				case KC_V: tapL(MEH(KC_F2)); break; // VimR
+				case KC_U: tapL(MEH(KC_F4)); break; // iTunes / Music
+				case KC_E: tapL(MEH(KC_F5)); break; // Trello
 				case KC_X: tapL(LCAG(KC_F2)); break; // Xcode
 				case KC_P: tapL(MEH(KC_F12)); break; // 1Password
 				case KC_M: tapL(LCAG(KC_F1)); break; // Messaging App
@@ -143,11 +145,8 @@ void process_leading_sequence(void)
 				case KC_C: { uint16_t mods[] = { KC_CMD }; stick(mods, 1); tapL(KC_TAB); } break; // Sticky ⌘ ↹
 				case KC_R: tapL(LCAG(KC_F5)); break; // tRansmission
 				case KC_D: tapL(LCAG(KC_F4)); break; // toDoist
-				case KC_I: tapL(HYPR(KC_F3)); break; // iTunes Mini Player - Alfred
 				case KC_S: tapL(CMD(KC_SPC)); break; // Spotlight
 				case KC_O: tapL(CMD(OPT(KC_SPC))); break; // mOom
-				/* case KC_F: tapL(HYPR(KC_F1)); break; */
-				/* case KC_L: tapL(MEH(KC_F4)); break; */
 			}
 			break;
 			
@@ -252,6 +251,7 @@ void process_leading_sequence(void)
 				case KC_LEAD: tapL(CMD(KC_DOT)); break; // ⌘ .
 				case KC_J: tapL(CMD(OPT(KC_DOWN))); break; // ⌘ ⌥ ↓
 				case KC_K: tapL(CMD(OPT(KC_UP))); break; // ⌘ ⌥ ↑
+				case KC_U: tapL(HYPR(KC_F3)); break; // Music Mini Player - Alfred
 			}
 			break;
 			
