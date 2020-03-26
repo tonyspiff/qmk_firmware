@@ -148,6 +148,7 @@ void process_leading_sequence(void)
 				case KC_D: tapL(LCAG(KC_F4)); break; // toDoist
 				case KC_S: tapL(CMD(KC_SPC)); break; // Spotlight
 				case KC_O: tapL(CMD(OPT(KC_SPC))); break; // mOom
+				case KC_Z: tapL(LCAG(KC_F6)); break; // Zeplin
 			}
 			break;
 			
