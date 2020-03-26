@@ -112,6 +112,7 @@ void process_leading_sequence(void)
 		case 0: return;
 		case KC_ESC: endLeading(); break;
 		case KC_LEAD: tapL(KC_DOT); break;
+		case KC_TAB: tap(KC_DOT); tapL(KC_TAB); break;
 		case KC_P: tapL(MEH(KC_F3)); break;
 		case KC_U: tapL(KC_F13); break;
 		case KC_N: layer_on(Numpad); endLeading(); break;
